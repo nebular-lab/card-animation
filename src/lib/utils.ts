@@ -8,11 +8,20 @@ export function cn(...inputs: ClassValue[]) {
 export const sleep = (ms: number) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
-export const domDistance = ({ from, to }: { from: DOMRect; to: DOMRect }) => {
-  const fromCenterX = (from.left + from.right) / 2;
-  const fromCenterY = (from.top + from.bottom) / 2;
-  const toCenterX = (to.left + to.right) / 2;
-  const toCenterY = (to.top + to.bottom) / 2;
+export const domDistance = ({
+  from,
+  to,
+}: {
+  from: HTMLElement;
+  to: HTMLElement;
+}) => {
+  const fromRect = from.getBoundingClientRect();
+  const toRect = to.getBoundingClientRect();
+
+  const fromCenterX = (fromRect.left + fromRect.right) / 2;
+  const fromCenterY = (fromRect.top + fromRect.bottom) / 2;
+  const toCenterX = (toRect.left + toRect.right) / 2;
+  const toCenterY = (toRect.top + toRect.bottom) / 2;
 
   const x = toCenterX - fromCenterX;
   const y = toCenterY - fromCenterY;

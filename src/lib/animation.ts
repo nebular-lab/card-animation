@@ -34,8 +34,8 @@ export const discardAnimation = async (input: DiscardAnimationInput) => {
     }
 
     const { x, y } = domDistance({
-      from: cardRef.current.getBoundingClientRect(),
-      to: topCardRef.current.getBoundingClientRect(),
+      from: cardRef.current,
+      to: topCardRef.current,
     });
 
     await animate(
