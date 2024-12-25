@@ -93,8 +93,6 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Default = {};
-
 export const DiscardCard: Story = {
   parameters: {
     layout: "centered",
