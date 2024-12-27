@@ -111,11 +111,7 @@ export const socketEventSchema = z.object({
   gameState: gameStateSchema,
 });
 
-type UseGame = {
-  mySeatId: SeatId;
-};
-
-export const useGame = ({ mySeatId }: UseGame) => {
+export const useGame = () => {
   const [gameState, setGameState] = useState<GameState>(initialState);
 
   const playerRefs = seatIds.map((seatId) => {
@@ -166,7 +162,7 @@ export const useGame = ({ mySeatId }: UseGame) => {
             await discardAnimation({
               action,
               myCardRefs,
-              mySeatId,
+              mySeatId: gameState.mySeatId,
               tableBorderRef,
               topCardRef,
             });
@@ -181,7 +177,7 @@ export const useGame = ({ mySeatId }: UseGame) => {
         })
         .exhaustive();
     };
-  }, [myCardRefs, mySeatId]);
+  }, [myCardRefs]);
 
   return {
     socketRef,

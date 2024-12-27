@@ -8,9 +8,8 @@ import { TableBorder } from "./table";
 import TopCard from "./topCard";
 
 export const GameField = () => {
-  const mySeatId = 1;
   const { socketRef, gameState, myCardRefs, tableBorderRef, topCardRef } =
-    useGame({ mySeatId });
+    useGame();
 
   return (
     <div className="relative h-[600px] w-[1024px] select-none bg-gray-800">
@@ -19,7 +18,7 @@ export const GameField = () => {
         <Direction isClockwise={gameState.isClockwise} />
         <PlayerAreaField
           seatIds={seatIds}
-          mySeatId={mySeatId}
+          mySeatId={gameState.mySeatId}
           gameState={gameState}
         />
         <TopCard topCardRef={topCardRef} topCard={gameState.topCard} />
@@ -28,7 +27,7 @@ export const GameField = () => {
         cards={gameState.myCards}
         cardRefs={myCardRefs}
         socketRef={socketRef}
-        mySeatId={mySeatId}
+        mySeatId={gameState.mySeatId}
       />
     </div>
   );
