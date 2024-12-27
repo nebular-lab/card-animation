@@ -9,7 +9,7 @@ import { discardCard } from "@/lib/action";
 import { Card } from "./card";
 
 type Props = {
-  cards: PlayerCard[];
+  cards: PlayerCard[] | undefined;
   cardRefs: MyCardRef[];
   socketRef: RefObject<WebSocket | null>;
   mySeatId: SeatId;
@@ -21,8 +21,11 @@ export const CardField: FC<Props> = ({
   socketRef,
   mySeatId,
 }) => {
+  if (!cards) {
+    return null;
+  }
   return (
-    <div className="flex justify-center gap-1">
+    <div className="absolute inset-x-0 bottom-10 m-auto flex justify-center gap-1">
       <AnimatePresence>
         {cards.map((card) => {
           const discard = () => {

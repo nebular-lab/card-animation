@@ -1,4 +1,11 @@
-import { createRef, RefObject, useEffect, useRef, useState } from "react";
+import {
+  createRef,
+  RefObject,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { match } from "ts-pattern";
 import { z } from "zod";
 
@@ -120,12 +127,16 @@ export const useGame = ({ mySeatId }: UseGame) => {
   const deckRef = useRef<HTMLDivElement>(null);
   const topCardRef = useRef<HTMLDivElement>(null);
   const tableBorderRef = useRef<SVGRectElement>(null);
-  const myCardRefs = gameState.myCards.map((card) => {
-    return {
-      id: card.id,
-      ref: createRef<HTMLDivElement>(),
-    };
-  });
+  const myCardRefs = useMemo(
+    () =>
+      gameState.myCards?.map((card) => {
+        return {
+          id: card.id,
+          ref: createRef<HTMLDivElement>(),
+        };
+      }) ?? [],
+    [gameState.myCards],
+  );
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {

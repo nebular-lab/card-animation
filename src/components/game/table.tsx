@@ -5,7 +5,7 @@ type Props = {
   tableBorderRef: RefObject<SVGRectElement | null>;
 };
 
-export const Table = ({ tableBorderRef }: Props) => {
+export const TableBorder = ({ tableBorderRef }: Props) => {
   return (
     <motion.svg
       viewBox="0 0 700 320"

@@ -39,7 +39,7 @@ export const playerCardSchema = z.union([
 
 export type PlayerCard = z.infer<typeof playerCardSchema>;
 
-export const gameStateSchema = z.object({
+export const inGameStateSchema = z.object({
   kind: z.literal("in-game"),
   players: z.array(playerSchema),
   deckCount: z.number(),
@@ -50,5 +50,26 @@ export const gameStateSchema = z.object({
   mySeatId: seatIdSchema,
   myCards: z.array(playerCardSchema),
 });
+
+export type inGameState = z.infer<typeof inGameStateSchema>;
+
+export const notStartedGameStateSchema = z.object({
+  kind: z.literal("not-started"),
+  players: z.array(playerSchema),
+  deckCount: z.undefined(),
+  topCard: z.undefined(),
+  isClockwise: z.undefined(),
+  currentSeatId: z.undefined(),
+
+  mySeatId: seatIdSchema,
+  myCards: z.undefined(),
+});
+
+export type notStartedGameState = z.infer<typeof notStartedGameStateSchema>;
+
+export const gameStateSchema = z.union([
+  inGameStateSchema,
+  notStartedGameStateSchema,
+]);
 
 export type GameState = z.infer<typeof gameStateSchema>;
