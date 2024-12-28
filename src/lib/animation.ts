@@ -50,6 +50,5 @@ export const discardAnimation = async (input: DiscardAnimationInput) => {
       { duration: 1 },
     );
   } else {
-    // 他のプレイヤーがカードを捨てたときのアニメーション
   }
 };

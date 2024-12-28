@@ -8,6 +8,7 @@ import { Direction } from "../direction";
 import { PlayerAreaField } from "../playerField";
 import { TableBorder } from "../table";
 import TopCard from "../topCard";
+import { Deck } from "../deck";
 
 export const GameField = () => {
   const { socketRef, gameState, myCardRefs, tableBorderRef, topCardRef } =
@@ -28,6 +29,7 @@ export const GameField = () => {
                 gameState={g}
               />
               <TopCard topCardRef={topCardRef} topCard={g.topCard} />
+              <Deck deckSize={g.deckSize} />
             </div>
             <CardField
               cards={g.myCards}

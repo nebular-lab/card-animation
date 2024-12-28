@@ -7,7 +7,7 @@ import { seatIdSchema } from "./seat";
 export const inGameStateSchema = z.object({
   kind: z.literal("in-game"),
   players: z.array(playerSchema),
-  deckCount: z.number(),
+  deckSize: z.number(),
   topCard: cardSchema,
   isClockwise: z.boolean(),
   currentSeatId: seatIdSchema,
@@ -21,7 +21,7 @@ export type InGameState = z.infer<typeof inGameStateSchema>;
 export const notStartedGameStateSchema = z.object({
   kind: z.literal("not-started"),
   players: z.array(playerSchema),
-  deckCount: z.undefined(),
+  deckSize: z.undefined(),
   topCard: z.undefined(),
   isClockwise: z.undefined(),
   currentSeatId: z.undefined(),

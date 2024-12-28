@@ -69,7 +69,7 @@ const myCards: PlayerCard[] = [
 export const initialGameState: InGameState = {
   kind: "in-game",
   players: players,
-  deckCount: 112,
+  deckSize: 112,
   topCard,
   isClockwise: true,
   currentSeatId: 1,
@@ -80,7 +80,7 @@ export const initialGameState: InGameState = {
 export const updatedGameState: InGameState = {
   kind: "in-game",
   players: players,
-  deckCount: 112,
+  deckSize: 112,
   topCard: {
     id: 1,
     kind: "NumberCard",

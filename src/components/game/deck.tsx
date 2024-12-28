@@ -1,12 +1,10 @@
 type Props = {
-  deckSize: number;
+  deckSize: number | undefined;
 };
 
 export const Deck = ({ deckSize }: Props) => {
   return (
-    <div
-      className={`absolute flex aspect-square items-center justify-center rounded-full border-2 border-border/60 text-white`}
-    >
+    <div className="absolute inset-0 right-[30%] m-auto flex aspect-square size-fit h-[52px] items-center justify-center rounded-full border-2 text-white">
       {deckSize}
     </div>
   );
