@@ -4,7 +4,7 @@ import { FC, RefObject } from "react";
 import { PlayerCard } from "@/common/type/card";
 import { SeatId } from "@/common/type/seat";
 import { MyCardRef } from "@/hooks/useGame";
-import { discardCard } from "@/lib/action";
+import { action } from "@/lib/action";
 
 import { Card } from "./card";
 
@@ -13,6 +13,8 @@ type Props = {
   cardRefs: MyCardRef[];
   socketRef: RefObject<WebSocket | null>;
   mySeatId: SeatId;
+  dummyCard: PlayerCard | undefined;
+  dummyCardRef: RefObject<HTMLDivElement | null>;
 };
 
 export const CardField: FC<Props> = ({
@@ -20,16 +22,19 @@ export const CardField: FC<Props> = ({
   cardRefs,
   socketRef,
   mySeatId,
+  dummyCard,
+  dummyCardRef,
 }) => {
   if (!cards) {
     return null;
   }
+
   return (
     <div className="absolute inset-x-0 bottom-10 m-auto flex justify-center gap-1">
       <AnimatePresence>
         {cards.map((card) => {
           const discard = () => {
-            discardCard(
+            action(
               {
                 kind: "discard",
                 card,
@@ -51,6 +56,24 @@ export const CardField: FC<Props> = ({
             </motion.div>
           );
         })}
+
+        <motion.div
+          ref={dummyCardRef}
+          whileHover={{ scale: 1.1 }}
+          onClick={
+            dummyCard
+              ? () =>
+                  action(
+                    { kind: "discard", card: dummyCard, seatId: mySeatId },
+                    socketRef.current,
+                  )
+              : undefined
+          }
+          className={dummyCard ? "" : "opacity-0"}
+          layout
+        >
+          {dummyCard && <Card cardVariant={dummyCard} size="md" hover />}
+        </motion.div>
       </AnimatePresence>
     </div>
   );

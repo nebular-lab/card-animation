@@ -14,6 +14,8 @@ export const inGameStateSchema = z.object({
 
   mySeatId: seatIdSchema,
   myCards: z.array(playerCardSchema),
+  canDraw: z.boolean(),
+  canPass: z.boolean(),
 });
 
 export type InGameState = z.infer<typeof inGameStateSchema>;
@@ -28,6 +30,8 @@ export const notStartedGameStateSchema = z.object({
 
   mySeatId: seatIdSchema,
   myCards: z.undefined(),
+  canDraw: z.undefined(),
+  canPass: z.undefined(),
 });
 
 export type NotStartedGameState = z.infer<typeof notStartedGameStateSchema>;

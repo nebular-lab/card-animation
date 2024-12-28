@@ -3,6 +3,7 @@ import { equals, any } from "ramda";
 import { RefObject } from "react";
 
 import { DiscardAction } from "@/common/type/action";
+import { PlayerCard } from "@/common/type/card";
 import { SeatId } from "@/common/type/seat";
 
 import { domDistance } from "./utils";
@@ -95,7 +96,7 @@ type TableBorderAnimationInput = {
   toSeatId: SeatId;
 };
 
-const tableBorderAnimation = async (input: TableBorderAnimationInput) => {
+export const tableBorderAnimation = async (input: TableBorderAnimationInput) => {
   const { tableBorderRef, anotherTableBorderRef, fromSeatId, toSeatId } = input;
   if (!tableBorderRef.current || !anotherTableBorderRef.current) {
     console.error("tableBorder not found");
@@ -181,4 +182,23 @@ export const discardOpponentCardAnimation = async (
     fromSeatId: action.seatId,
     toSeatId: nextActionSeatId,
   });
+};
+
+type DrawMyCardAnimationInput = {
+  dummyCardRef: RefObject<HTMLDivElement | null>;
+};
+
+export const drawMyCardAnimation = async (input: DrawMyCardAnimationInput) => {
+  const {  dummyCardRef } = input;
+
+  if (!dummyCardRef.current) {
+    console.error("dummyCard not found");
+    return;
+  }
+
+  await animate(
+    dummyCardRef.current,
+    { x: 0, y: [30, 0], opacity: [0, 1] },
+    { duration: 0.3, ease: "easeInOut" },
+  );
 };

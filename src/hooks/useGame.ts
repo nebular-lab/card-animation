@@ -9,13 +9,15 @@ import {
 import { match } from "ts-pattern";
 
 import { MOCK_SERVER_URL, seatIds } from "@/common/const";
-import { Card } from "@/common/type/card";
+import { Card, PlayerCard } from "@/common/type/card";
 import { GameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
 import { socketEventSchema } from "@/common/type/socketEvent";
 import {
   discardMyCardAnimation,
   discardOpponentCardAnimation,
+  drawMyCardAnimation,
+  tableBorderAnimation,
 } from "@/lib/animation";
 import { sleep } from "@/lib/utils";
 
@@ -39,6 +41,7 @@ export const useGame = () => {
   const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
     undefined,
   );
+  const [dummyCard, setDummyCard] = useState<PlayerCard | undefined>(undefined);
 
   const playerRefs = seatIds.map((seatId) => {
     return {
@@ -60,6 +63,8 @@ export const useGame = () => {
       }) ?? [],
     [gameState?.myCards],
   );
+  const dummyCardRef = useRef<HTMLDivElement>(null);
+
   const playerCardRefs: Record<
     SeatId,
     RefObject<HTMLDivElement | null>
@@ -119,7 +124,7 @@ export const useGame = () => {
               setGameState(gameState);
             } else {
               setOpponentCard({ seatId: action.seatId, card: action.card });
-              await sleep(800);
+              await sleep(500);
               await discardOpponentCardAnimation({
                 action,
                 nextActionSeatId: gameState.currentSeatId,
@@ -132,20 +137,53 @@ export const useGame = () => {
             }
           },
         )
-        .with({ kind: "action", action: { kind: "pass" } }, (action) => {
-          console.log(action);
-        })
-        .with({ kind: "action", action: { kind: "draw" } }, (action) => {
-          console.log(action);
-        })
+        .with(
+          { kind: "action", action: { kind: "pass" } },
+          async ({ action, gameState }) => {
+            await tableBorderAnimation({
+              tableBorderRef,
+              anotherTableBorderRef,
+              fromSeatId: action.seatId,
+              toSeatId: gameState.currentSeatId,
+            });
+            setGameState(gameState);
+          },
+        )
+        .with(
+          { kind: "action", action: { kind: "draw" } },
+          async ({ action, gameState: newGameState }) => {
+            if (newGameState.mySeatId === action.seatId) {
+              console.log(action);
+              const drawnCard = newGameState.myCards.find((myCard) =>
+                gameState?.myCards?.every((card) => card.id !== myCard.id),
+              );
+              if (!drawnCard) {
+                console.error("drawn card not found");
+                return;
+              }
+              setDummyCard(drawnCard);
+
+              await drawMyCardAnimation({ dummyCardRef });
+              setDummyCard(undefined);
+              setGameState({
+                ...newGameState,
+                myCards: gameState?.myCards?.concat(drawnCard) ?? [],
+              });
+            } else {
+              console.log(action);
+            }
+          },
+        )
         .exhaustive();
     };
-  }, [myCardRefs, opponentCard, playerCardRefs]);
+  }, [gameState?.myCards, myCardRefs, opponentCard, playerCardRefs]);
 
   return {
     socketRef,
     gameState,
     opponentCard,
+    dummyCard,
+    dummyCardRef,
     myCardRefs,
     playerRefs,
     deckRef,

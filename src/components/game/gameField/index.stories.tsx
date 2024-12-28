@@ -9,7 +9,13 @@ import { StartGameEvent } from "@/common/type/socketEvent";
 import { sleep } from "@/lib/utils";
 import { wsSend } from "@/lib/websocket";
 
-import { initialGameState, updatedGameState, updatedGameState2 } from "./const";
+import {
+  initialGameState,
+  updatedGameState,
+  updatedGameState2,
+  updatedGameState3,
+  updatedGameState4,
+} from "./const";
 
 import { GameField } from ".";
 
@@ -67,6 +73,20 @@ export const DiscardCard: Story = {
                     },
                   },
                   gameState: updatedGameState2,
+                });
+              })
+              .with({ action: { kind: "draw" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: updatedGameState3,
+                });
+              })
+              .with({ action: { kind: "pass" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: updatedGameState4,
                 });
               })
               .otherwise(() => {

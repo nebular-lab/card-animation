@@ -3,6 +3,7 @@ import { match } from "ts-pattern";
 import { seatIds } from "@/common/const";
 import { useGame } from "@/hooks/useGame";
 
+import { ButtonField } from "../buttonField";
 import { CardField } from "../cardField";
 import { Deck } from "../deck";
 import { Direction } from "../direction";
@@ -15,6 +16,8 @@ export const GameField = () => {
     socketRef,
     gameState,
     opponentCard,
+    dummyCard,
+    dummyCardRef,
     myCardRefs,
     tableBorderRef,
     anotherTableBorderRef,
@@ -48,6 +51,14 @@ export const GameField = () => {
             <CardField
               cards={g.myCards}
               cardRefs={myCardRefs}
+              socketRef={socketRef}
+              mySeatId={g.mySeatId}
+              dummyCard={dummyCard}
+              dummyCardRef={dummyCardRef}
+            />
+            <ButtonField
+              canDraw={g.canDraw}
+              canPass={g.canPass}
               socketRef={socketRef}
               mySeatId={g.mySeatId}
             />
