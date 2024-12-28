@@ -90,3 +90,29 @@ export const cardSchema = z.union([
 ]);
 
 export type Card = z.infer<typeof cardSchema>;
+
+export const playerCardSchema = z.union([
+  numberCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+  forceWildCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+  reverseCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+  skipCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+  drawTwoCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+  wildCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+  drawFourCardSchema.extend({
+    canDiscard: z.boolean(),
+  }),
+]);
+
+export type PlayerCard = z.infer<typeof playerCardSchema>;

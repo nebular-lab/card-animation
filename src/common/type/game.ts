@@ -1,43 +1,8 @@
 import { z } from "zod";
 
-import {
-  cardSchema,
-  drawFourCardSchema,
-  drawTwoCardSchema,
-  forceWildCardSchema,
-  numberCardSchema,
-  reverseCardSchema,
-  skipCardSchema,
-  wildCardSchema,
-} from "./card";
+import { cardSchema, playerCardSchema } from "./card";
 import { playerSchema } from "./player";
 import { seatIdSchema } from "./seat";
-
-export const playerCardSchema = z.union([
-  numberCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-  forceWildCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-  reverseCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-  skipCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-  drawTwoCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-  wildCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-  drawFourCardSchema.extend({
-    canDiscard: z.boolean(),
-  }),
-]);
-
-export type PlayerCard = z.infer<typeof playerCardSchema>;
 
 export const inGameStateSchema = z.object({
   kind: z.literal("in-game"),
@@ -51,7 +16,7 @@ export const inGameStateSchema = z.object({
   myCards: z.array(playerCardSchema),
 });
 
-export type inGameState = z.infer<typeof inGameStateSchema>;
+export type InGameState = z.infer<typeof inGameStateSchema>;
 
 export const notStartedGameStateSchema = z.object({
   kind: z.literal("not-started"),
@@ -65,7 +30,7 @@ export const notStartedGameStateSchema = z.object({
   myCards: z.undefined(),
 });
 
-export type notStartedGameState = z.infer<typeof notStartedGameStateSchema>;
+export type NotStartedGameState = z.infer<typeof notStartedGameStateSchema>;
 
 export const gameStateSchema = z.union([
   inGameStateSchema,

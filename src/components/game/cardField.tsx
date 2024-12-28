@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { FC, RefObject } from "react";
 
-import { PlayerCard } from "@/common/type/game";
+import { PlayerCard } from "@/common/type/card";
 import { SeatId } from "@/common/type/seat";
 import { MyCardRef } from "@/hooks/useGame";
 import { discardCard } from "@/lib/action";
