@@ -1,5 +1,8 @@
+import { RefObject } from "react";
+
 import { GameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
+import { OpponentCard } from "@/hooks/useGame";
 
 import { PlayerArea } from "./playerArea";
 
@@ -21,9 +24,20 @@ type Props = {
   seatIds: SeatId[];
   mySeatId: SeatId;
   gameState: GameState;
+  playerCardRefs: {
+    id: SeatId;
+    ref: RefObject<HTMLDivElement | null>;
+  }[];
+  opponentCards: OpponentCard[];
 };
 
-export const PlayerAreaField: React.FC<Props> = ({ seatIds, mySeatId, gameState }) => {
+export const PlayerAreaField: React.FC<Props> = ({
+  seatIds,
+  mySeatId,
+  gameState,
+  playerCardRefs,
+  opponentCards,
+}) => {
   return (
     <>
       {seatIds.map((seatId) => {
@@ -34,12 +48,19 @@ export const PlayerAreaField: React.FC<Props> = ({ seatIds, mySeatId, gameState 
 
         return (
           <div key={seatId} className={getSeatClassName(mySeatId, seatId)}>
-            <PlayerArea player={player} isTurn={isTurn} />
+            <PlayerArea
+              player={player}
+              isTurn={isTurn}
+              playerCardRef={playerCardRefs.find(
+                (playCardRef) => playCardRef.id === seatId,
+              )}
+              opponentCard={opponentCards.find(
+                (opponentCard) => opponentCard.seatId === seatId,
+              )}
+            />
           </div>
         );
       })}
     </>
   );
 };
-
-

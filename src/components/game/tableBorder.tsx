@@ -3,9 +3,13 @@ import { RefObject } from "react";
 
 type Props = {
   tableBorderRef: RefObject<SVGRectElement | null>;
+  anotherTableBorderRef: RefObject<SVGRectElement | null>;
 };
 
-export const TableBorder = ({ tableBorderRef }: Props) => {
+export const TableBorder = ({
+  tableBorderRef,
+  anotherTableBorderRef,
+}: Props) => {
   return (
     <motion.svg
       viewBox="0 0 700 320"
@@ -33,7 +37,21 @@ export const TableBorder = ({ tableBorderRef }: Props) => {
         className="stroke-yellow-500"
         strokeWidth="14"
         strokeLinecap="round"
-        initial={{ pathLength: 0, pathOffset: 0.3 }}
+        initial={{ pathLength: 0, pathOffset: 0.1 }}
+      />
+      <motion.rect
+        ref={anotherTableBorderRef}
+        x="7"
+        y="7"
+        fill="none"
+        width="686"
+        height="306"
+        transform="rotate(180)"
+        rx="160"
+        className="origin-center stroke-yellow-500"
+        strokeWidth="14"
+        strokeLinecap="round"
+        initial={{ pathLength: 0, pathOffset: 0.1 }}
       />
     </motion.svg>
   );
