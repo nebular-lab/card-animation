@@ -79,7 +79,15 @@ export const initialGameState: InGameState = {
 
 export const updatedGameState: InGameState = {
   kind: "in-game",
-  players: players,
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 6,
+      };
+    }
+    return player;
+  }),
   deckSize: 112,
   topCard: {
     id: 1,
