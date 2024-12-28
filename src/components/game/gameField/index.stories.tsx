@@ -6,9 +6,10 @@ import { z } from "zod";
 import { MOCK_SERVER_URL } from "@/common/const";
 import { actionSchema } from "@/common/type/action";
 import { StartGameEvent } from "@/common/type/socketEvent";
+import { sleep } from "@/lib/utils";
 import { wsSend } from "@/lib/websocket";
 
-import { initialGameState, updatedGameState } from "./const";
+import { initialGameState, updatedGameState, updatedGameState2 } from "./const";
 
 import { GameField } from ".";
 
@@ -47,11 +48,25 @@ export const DiscardCard: Story = {
               return;
             }
             match(parsedData.data)
-              .with({ action: { kind: "discard" } }, ({ action }) => {
-                wsSend(connection, {
+              .with({ action: { kind: "discard" } }, async ({ action }) => {
+                await wsSend(connection, {
                   kind: "action",
                   action: action,
                   gameState: updatedGameState,
+                });
+                await sleep(4000);
+                await wsSend(connection, {
+                  kind: "action",
+                  action: {
+                    kind: "discard",
+                    seatId: 2,
+                    card: {
+                      id: 5,
+                      kind: "ReverseCard",
+                      color: "red",
+                    },
+                  },
+                  gameState: updatedGameState2,
                 });
               })
               .otherwise(() => {
@@ -64,4 +79,3 @@ export const DiscardCard: Story = {
     },
   },
 };
-

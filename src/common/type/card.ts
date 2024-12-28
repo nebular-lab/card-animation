@@ -19,6 +19,13 @@ export const cardNumberSchema = z.union([
 
 export type CardNumber = z.infer<typeof cardNumberSchema>;
 
+export const  CardIdSchema = z.union([
+  z.literal(0),
+  z.literal(1),
+  z.literal(2),
+
+])
+
 export const numberCardSchema = z.object({
   id: z.number(),
   kind: z.literal("NumberCard"),
@@ -116,3 +123,4 @@ export const playerCardSchema = z.union([
 ]);
 
 export type PlayerCard = z.infer<typeof playerCardSchema>;
+

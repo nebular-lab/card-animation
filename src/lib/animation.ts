@@ -26,7 +26,7 @@ export const discardMyCardAnimation = async (input: DiscardAnimationInput) => {
     topCardRef,
   } = input;
 
-  const cardRef = myCardRefs.find((card) => card.id === action.cardId)?.ref;
+  const cardRef = myCardRefs.find((card) => card.id === action.card.id)?.ref;
 
   if (!cardRef || !cardRef.current) {
     console.error("card not found");
@@ -53,12 +53,12 @@ export const discardMyCardAnimation = async (input: DiscardAnimationInput) => {
     { duration: 0.3, ease: "easeInOut" },
   );
 
-  await tableBorderAnimation(
+  await tableBorderAnimation({
     tableBorderRef,
     anotherTableBorderRef,
-    action.seatId,
-    nextActonSeatId,
-  );
+    fromSeatId: action.seatId,
+    toSeatId: nextActonSeatId,
+  });
 };
 
 const pathOffsetRelation: Record<SeatId, number> = {
@@ -88,12 +88,15 @@ const seatRotateRelation: Record<SeatId, SeatId> = {
   6: 3,
 };
 
-const tableBorderAnimation = async (
-  tableBorderRef: RefObject<SVGRectElement | null>,
-  anotherTableBorderRef: RefObject<SVGRectElement | null>,
-  fromSeatId: SeatId,
-  toSeatId: SeatId,
-) => {
+type TableBorderAnimationInput = {
+  tableBorderRef: RefObject<SVGRectElement | null>;
+  anotherTableBorderRef: RefObject<SVGRectElement | null>;
+  fromSeatId: SeatId;
+  toSeatId: SeatId;
+};
+
+const tableBorderAnimation = async (input: TableBorderAnimationInput) => {
+  const { tableBorderRef, anotherTableBorderRef, fromSeatId, toSeatId } = input;
   if (!tableBorderRef.current || !anotherTableBorderRef.current) {
     console.error("tableBorder not found");
     return;
@@ -123,4 +126,59 @@ const tableBorderAnimation = async (
       { duration: 1 },
     );
   }
+};
+
+type DiscardOpponentCardAnimationInput = {
+  action: DiscardAction;
+  opponentCardRefs: Record<SeatId, RefObject<HTMLDivElement | null>>;
+  tableBorderRef: RefObject<SVGRectElement | null>;
+  anotherTableBorderRef: RefObject<SVGRectElement | null>;
+  topCardRef: RefObject<HTMLDivElement | null>;
+  nextActionSeatId: SeatId;
+};
+
+export const discardOpponentCardAnimation = async (
+  input: DiscardOpponentCardAnimationInput,
+) => {
+  const {
+    action,
+    opponentCardRefs,
+    tableBorderRef,
+    anotherTableBorderRef,
+    topCardRef,
+    nextActionSeatId,
+  } = input;
+  const cardRef = opponentCardRefs[action.seatId];
+
+  if (!cardRef || !cardRef.current) {
+    console.error("card not found");
+    return;
+  }
+  if (!tableBorderRef.current) {
+    console.error("tableBorder not found");
+    return;
+  }
+
+  if (!topCardRef.current) {
+    console.error("topCard not found");
+    return;
+  }
+
+  const { x, y } = domDistance({
+    from: cardRef.current,
+    to: topCardRef.current,
+  });
+
+  await animate(
+    cardRef.current,
+    { x, y },
+    { duration: 0.3, ease: "easeInOut" },
+  );
+
+  await tableBorderAnimation({
+    tableBorderRef,
+    anotherTableBorderRef,
+    fromSeatId: action.seatId,
+    toSeatId: nextActionSeatId,
+  });
 };

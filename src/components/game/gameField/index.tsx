@@ -14,7 +14,7 @@ export const GameField = () => {
   const {
     socketRef,
     gameState,
-    opponentCards,
+    opponentCard,
     myCardRefs,
     tableBorderRef,
     anotherTableBorderRef,
@@ -29,16 +29,20 @@ export const GameField = () => {
         .otherwise((g) => (
           <>
             <div className="absolute inset-x-0 top-20 m-auto h-[320px] w-[700px]">
-              <TableBorder tableBorderRef={tableBorderRef} anotherTableBorderRef={anotherTableBorderRef} />
+              <TableBorder
+                tableBorderRef={tableBorderRef}
+                anotherTableBorderRef={anotherTableBorderRef}
+              />
               <Direction isClockwise={g.isClockwise} />
+              <TopCard topCardRef={topCardRef} topCard={g.topCard} />
               <PlayerAreaField
                 seatIds={seatIds}
                 mySeatId={g.mySeatId}
                 gameState={g}
                 playerCardRefs={playerCardRefs}
-                opponentCards={opponentCards}
+                opponentCard={opponentCard}
               />
-              <TopCard topCardRef={topCardRef} topCard={g.topCard} />
+
               <Deck deckSize={g.deckSize} />
             </div>
             <CardField

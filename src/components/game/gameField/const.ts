@@ -100,3 +100,32 @@ export const updatedGameState: InGameState = {
   mySeatId: 1,
   myCards: myCards.filter((card) => card.id !== 1),
 };
+
+export const updatedGameState2: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 6,
+      };
+    }
+    if (player.seatId === 2) {
+      return {
+        ...player,
+        cardCount: 6,
+      };
+    }
+    return player;
+  }),
+  deckSize: 112,
+  topCard: {
+    id: 1,
+    kind: "ReverseCard",
+    color: "red",
+  },
+  isClockwise: false,
+  currentSeatId: 1,
+  mySeatId: 1,
+  myCards: myCards.filter((card) => card.id !== 1),
+};

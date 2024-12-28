@@ -1,11 +1,12 @@
 import { z } from "zod";
 
+import { cardSchema } from "./card";
 import { seatIdSchema } from "./seat";
 
 const discardActionSchema = z.object({
   kind: z.literal("discard"),
   seatId: seatIdSchema,
-  cardId: z.number(),
+  card: cardSchema,
 });
 
 export type DiscardAction = z.infer<typeof discardActionSchema>;

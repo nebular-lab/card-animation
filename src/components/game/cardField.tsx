@@ -32,7 +32,7 @@ export const CardField: FC<Props> = ({
             discardCard(
               {
                 kind: "discard",
-                cardId: card.id,
+                card,
                 seatId: mySeatId,
               },
               socketRef.current,

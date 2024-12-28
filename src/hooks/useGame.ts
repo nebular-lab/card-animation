@@ -13,7 +13,11 @@ import { Card } from "@/common/type/card";
 import { GameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
 import { socketEventSchema } from "@/common/type/socketEvent";
-import { discardMyCardAnimation } from "@/lib/animation";
+import {
+  discardMyCardAnimation,
+  discardOpponentCardAnimation,
+} from "@/lib/animation";
+import { sleep } from "@/lib/utils";
 
 export type PlayerRef = {
   id: SeatId;
@@ -32,7 +36,9 @@ export type OpponentCard = {
 
 export const useGame = () => {
   const [gameState, setGameState] = useState<GameState | undefined>(undefined);
-  const [opponentCards, setOpponentCards] = useState<OpponentCard[]>([]);
+  const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
+    undefined,
+  );
 
   const playerRefs = seatIds.map((seatId) => {
     return {
@@ -54,12 +60,20 @@ export const useGame = () => {
       }) ?? [],
     [gameState?.myCards],
   );
-  const playerCardRefs = seatIds.map((seatId) => {
-    return {
-      id: seatId,
-      ref: createRef<HTMLDivElement>(),
-    };
-  });
+  const playerCardRefs: Record<
+    SeatId,
+    RefObject<HTMLDivElement | null>
+  > = useMemo(
+    () => ({
+      1: createRef<HTMLDivElement>(),
+      2: createRef<HTMLDivElement>(),
+      3: createRef<HTMLDivElement>(),
+      4: createRef<HTMLDivElement>(),
+      5: createRef<HTMLDivElement>(),
+      6: createRef<HTMLDivElement>(),
+    }),
+    [],
+  );
 
   const socketRef = useRef<WebSocket | null>(null);
 
@@ -104,6 +118,16 @@ export const useGame = () => {
               });
               setGameState(gameState);
             } else {
+              setOpponentCard({ seatId: action.seatId, card: action.card });
+              await sleep(800);
+              await discardOpponentCardAnimation({
+                action,
+                nextActionSeatId: gameState.currentSeatId,
+                opponentCardRefs: playerCardRefs,
+                tableBorderRef,
+                anotherTableBorderRef,
+                topCardRef,
+              });
               setGameState(gameState);
             }
           },
@@ -116,12 +140,12 @@ export const useGame = () => {
         })
         .exhaustive();
     };
-  }, [myCardRefs]);
+  }, [myCardRefs, opponentCard, playerCardRefs]);
 
   return {
     socketRef,
     gameState,
-    opponentCards,
+    opponentCard,
     myCardRefs,
     playerRefs,
     deckRef,

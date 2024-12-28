@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
+import { RefObject } from "react";
 
 import { Player } from "@/common/type/player";
-import { SeatId } from "@/common/type/seat";
 import { OpponentCard } from "@/hooks/useGame";
 
 import { Card } from "./card";
@@ -9,12 +9,7 @@ import { Card } from "./card";
 type Props = {
   player: Player | undefined;
   isTurn: boolean;
-  playerCardRef:
-    | {
-        id: SeatId;
-        ref: React.RefObject<HTMLDivElement | null>;
-      }
-    | undefined;
+  playerCardRef: RefObject<HTMLDivElement | null>;
   opponentCard: OpponentCard | undefined;
 };
 
@@ -52,14 +47,15 @@ export const PlayerArea = ({
           {player?.name ?? "-"}
         </div>
       </div>
-      {opponentCard?.card && (
-        <div
-          ref={playerCardRef?.ref}
-          className="absolute inset-y-0 left-0 m-auto size-fit"
-        >
+
+      <div
+        ref={playerCardRef}
+        className="absolute inset-y-0 left-0 m-auto size-fit"
+      >
+        {opponentCard?.card && (
           <Card cardVariant={opponentCard.card} size="md" />
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

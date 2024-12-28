@@ -24,11 +24,8 @@ type Props = {
   seatIds: SeatId[];
   mySeatId: SeatId;
   gameState: GameState;
-  playerCardRefs: {
-    id: SeatId;
-    ref: RefObject<HTMLDivElement | null>;
-  }[];
-  opponentCards: OpponentCard[];
+  playerCardRefs: Record<SeatId, RefObject<HTMLDivElement | null>>;
+  opponentCard: OpponentCard | undefined;
 };
 
 export const PlayerAreaField: React.FC<Props> = ({
@@ -36,7 +33,7 @@ export const PlayerAreaField: React.FC<Props> = ({
   mySeatId,
   gameState,
   playerCardRefs,
-  opponentCards,
+  opponentCard,
 }) => {
   return (
     <>
@@ -51,12 +48,10 @@ export const PlayerAreaField: React.FC<Props> = ({
             <PlayerArea
               player={player}
               isTurn={isTurn}
-              playerCardRef={playerCardRefs.find(
-                (playCardRef) => playCardRef.id === seatId,
-              )}
-              opponentCard={opponentCards.find(
-                (opponentCard) => opponentCard.seatId === seatId,
-              )}
+              playerCardRef={playerCardRefs[seatId]}
+              opponentCard={
+                opponentCard?.seatId === seatId ? opponentCard : undefined
+              }
             />
           </div>
         );
