@@ -17,6 +17,7 @@ import {
   discardMyCardAnimation,
   discardOpponentCardAnimation,
   drawMyCardAnimation,
+  drawOpponentCardAnimation,
   tableBorderAnimation,
 } from "@/lib/animation";
 import { sleep } from "@/lib/utils";
@@ -42,7 +43,8 @@ export const useGame = () => {
     undefined,
   );
   const [dummyCard, setDummyCard] = useState<PlayerCard | undefined>(undefined);
-
+  const [visibleOpponentDrawCard, setVisibleOpponentDrawCard] =
+    useState<boolean>(false);
   const playerRefs = seatIds.map((seatId) => {
     return {
       id: seatId,
@@ -64,7 +66,7 @@ export const useGame = () => {
     [gameState?.myCards],
   );
   const dummyCardRef = useRef<HTMLDivElement>(null);
-
+  const opponentDrawCardRef = useRef<HTMLDivElement>(null);
   const playerCardRefs: Record<
     SeatId,
     RefObject<HTMLDivElement | null>
@@ -170,7 +172,13 @@ export const useGame = () => {
                 myCards: gameState?.myCards?.concat(drawnCard) ?? [],
               });
             } else {
-              console.log(action);
+              setVisibleOpponentDrawCard(true);
+              await sleep(500);
+              await drawOpponentCardAnimation({
+                opponentDrawCardRef,
+                drawnPlayerAreaRef: playerCardRefs[action.seatId],
+              });
+              setVisibleOpponentDrawCard(false);
             }
           },
         )
@@ -191,5 +199,7 @@ export const useGame = () => {
     tableBorderRef,
     anotherTableBorderRef,
     playerCardRefs,
+    visibleOpponentDrawCard,
+    opponentDrawCardRef,
   };
 };

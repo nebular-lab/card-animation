@@ -119,8 +119,6 @@ const CardContent = (props: CardContentProps) => {
         </div>
       </div>
     ))
-    .with({ kind: "HiddenCard" }, () => (
-      <div className="h-full w-full bg-uno-black" />
-    ))
+    .with({ kind: "HiddenCard" }, () => <div className="text-lg">UNO</div>)
     .exhaustive();
 };

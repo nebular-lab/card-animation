@@ -3,7 +3,6 @@ import { equals, any } from "ramda";
 import { RefObject } from "react";
 
 import { DiscardAction } from "@/common/type/action";
-import { PlayerCard } from "@/common/type/card";
 import { SeatId } from "@/common/type/seat";
 
 import { domDistance } from "./utils";
@@ -96,7 +95,9 @@ type TableBorderAnimationInput = {
   toSeatId: SeatId;
 };
 
-export const tableBorderAnimation = async (input: TableBorderAnimationInput) => {
+export const tableBorderAnimation = async (
+  input: TableBorderAnimationInput,
+) => {
   const { tableBorderRef, anotherTableBorderRef, fromSeatId, toSeatId } = input;
   if (!tableBorderRef.current || !anotherTableBorderRef.current) {
     console.error("tableBorder not found");
@@ -189,7 +190,7 @@ type DrawMyCardAnimationInput = {
 };
 
 export const drawMyCardAnimation = async (input: DrawMyCardAnimationInput) => {
-  const {  dummyCardRef } = input;
+  const { dummyCardRef } = input;
 
   if (!dummyCardRef.current) {
     console.error("dummyCard not found");
@@ -200,5 +201,32 @@ export const drawMyCardAnimation = async (input: DrawMyCardAnimationInput) => {
     dummyCardRef.current,
     { x: 0, y: [30, 0], opacity: [0, 1] },
     { duration: 0.3, ease: "easeInOut" },
+  );
+};
+
+type DrawOpponentCardAnimationInput = {
+  opponentDrawCardRef: RefObject<HTMLDivElement | null>;
+  drawnPlayerAreaRef: RefObject<HTMLDivElement | null>;
+};
+
+export const drawOpponentCardAnimation = async (
+  input: DrawOpponentCardAnimationInput,
+) => {
+  const { opponentDrawCardRef, drawnPlayerAreaRef } = input;
+
+  if (!opponentDrawCardRef.current || !drawnPlayerAreaRef.current) {
+    console.error("opponentDrawCard or drawnPlayerArea not found");
+    return;
+  }
+
+  const { x, y } = domDistance({
+    from: opponentDrawCardRef.current,
+    to: drawnPlayerAreaRef.current,
+  });
+
+  await animate(
+    opponentDrawCardRef.current,
+    { x, y },
+    { duration: 0.4, ease: "easeInOut" },
   );
 };

@@ -11,6 +11,8 @@ import { PlayerAreaField } from "../playerField";
 import { TableBorder } from "../tableBorder";
 import TopCard from "../topCard";
 
+import { OpponentDrawCard } from "./opponentDrawCard";
+
 export const GameField = () => {
   const {
     socketRef,
@@ -23,6 +25,8 @@ export const GameField = () => {
     anotherTableBorderRef,
     topCardRef,
     playerCardRefs,
+    opponentDrawCardRef,
+    visibleOpponentDrawCard,
   } = useGame();
 
   return (
@@ -36,7 +40,6 @@ export const GameField = () => {
                 tableBorderRef={tableBorderRef}
                 anotherTableBorderRef={anotherTableBorderRef}
               />
-              <Direction isClockwise={g.isClockwise} />
               <TopCard topCardRef={topCardRef} topCard={g.topCard} />
               <PlayerAreaField
                 seatIds={seatIds}
@@ -45,8 +48,13 @@ export const GameField = () => {
                 playerCardRefs={playerCardRefs}
                 opponentCard={opponentCard}
               />
-
+              <Direction isClockwise={g.isClockwise} />
+              
               <Deck deckSize={g.deckSize} />
+              <OpponentDrawCard
+                opponentDrawCardRef={opponentDrawCardRef}
+                visibleOpponentDrawCard={visibleOpponentDrawCard}
+              />
             </div>
             <CardField
               cards={g.myCards}

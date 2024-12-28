@@ -201,3 +201,43 @@ export const updatedGameState4: InGameState = {
   canDraw: false,
   canPass: false,
 };
+
+export const updatedGameState5: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 2) {
+      return {
+        ...player,
+        cardCount: 6,
+      };
+    }
+    if (player.seatId === 6) {
+      return {
+        ...player,
+        cardCount: 8,
+      };
+    }
+    return player;
+  }),
+  deckSize: 111,
+  topCard: {
+    id: 1,
+    kind: "SkipCard",
+    color: "red",
+  },
+  isClockwise: false,
+  currentSeatId: 6,
+  mySeatId: 1,
+  myCards: myCards
+    .filter((card) => card.id !== 1)
+    .concat({
+      id: 2,
+      kind: "NumberCard",
+      color: "red",
+      number: 8,
+      canDiscard: true,
+    })
+    .sort((a, b) => a.id - b.id),
+  canDraw: false,
+  canPass: false,
+};

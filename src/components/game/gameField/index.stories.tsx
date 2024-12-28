@@ -15,6 +15,7 @@ import {
   updatedGameState2,
   updatedGameState3,
   updatedGameState4,
+  updatedGameState5,
 } from "./const";
 
 import { GameField } from ".";
@@ -87,6 +88,16 @@ export const DiscardCard: Story = {
                   kind: "action",
                   action: action,
                   gameState: updatedGameState4,
+                });
+
+                await sleep(4000);
+                await wsSend(connection, {
+                  kind: "action",
+                  action: {
+                    kind: "draw",
+                    seatId: 6,
+                  },
+                  gameState: updatedGameState5,
                 });
               })
               .otherwise(() => {
