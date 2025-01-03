@@ -52,7 +52,9 @@ export const PlayerArea = ({
           {player?.name ?? "-"}
         </div>
       </div>
-      <FloatingText ref={playerFloatingTextRef} text={floatingText} />
+      {floatingText && (
+        <FloatingText ref={playerFloatingTextRef} text={floatingText} />
+      )}
       <div
         ref={playerCardRef}
         className="absolute inset-y-0 left-0 m-auto size-fit"
