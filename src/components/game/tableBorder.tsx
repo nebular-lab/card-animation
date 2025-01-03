@@ -23,7 +23,7 @@ export const TableBorder = ({
         width="688"
         height="308"
         rx="160"
-        className="stroke-border"
+        className="stroke-border/30"
         strokeWidth="3"
       />
       <motion.rect

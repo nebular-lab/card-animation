@@ -39,10 +39,10 @@ export const PlayerArea = ({
         />
       )}
       <div
-        className={`relative size-full rounded-full border-2 bg-gray-800 ${isTurn && "border-yellow-500"}`}
+        className={`relative size-full rounded-full border-2 bg-gray-800 ${isTurn ? "border-yellow-500" : "border-border"}`}
       >
         <div
-          className={`absolute inset-y-[-2px] left-[-2px] flex aspect-square items-center justify-center rounded-full border-2 ${isTurn && "border-yellow-500"} text-white`}
+          className={`absolute inset-y-[-2px] left-[-2px] flex aspect-square items-center justify-center rounded-full border-2 ${isTurn ? "border-yellow-500" : "border-border"} text-white`}
         >
           {player?.cardCount ?? "-"}
         </div>

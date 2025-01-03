@@ -19,7 +19,7 @@ export const ArrowAnimation = ({
     >
       <motion.path
         d="M 50 80 A 30 30 0 0 1 50 20 L 45 25"
-        className="origin-center stroke-border"
+        className="origin-center stroke-border/30"
         transform="scaleX(-1)"
         fill="transparent"
         strokeWidth="2"
