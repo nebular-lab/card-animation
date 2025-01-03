@@ -155,7 +155,6 @@ export const useGame = () => {
           { kind: "action", action: { kind: "draw" } },
           async ({ action, gameState: newGameState }) => {
             if (newGameState.mySeatId === action.seatId) {
-              console.log(action);
               const drawnCard = newGameState.myCards.find((myCard) =>
                 gameState?.myCards?.every((card) => card.id !== myCard.id),
               );

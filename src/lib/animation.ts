@@ -105,7 +105,6 @@ export const tableBorderAnimation = async (
   }
 
   if (any(equals([fromSeatId, toSeatId]), borderJumpSeatIdRelation)) {
-    console.log("border jump");
     await animate(
       anotherTableBorderRef.current,
       {
