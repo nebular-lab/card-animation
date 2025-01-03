@@ -34,7 +34,6 @@ export const GameField = () => {
     setCanPointerEvent,
   } = useGame({ socketRef });
 
-  console.log("canPointerEvent", canPointerEvent);
   return (
     <div
       className={`${canPointerEvent || "pointer-events-none"} relative h-[600px] w-[1024px] select-none bg-gray-800`}

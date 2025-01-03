@@ -105,7 +105,7 @@ export const useGame = ({ socketRef }: Input) => {
     if (!socketRef.current) {
       return;
     }
-    socketRef.current.onmessage = (event) => {
+    socketRef.current.onmessage = async (event) => {
       const parsedEvent = socketEventSchema.safeParse(JSON.parse(event.data));
 
       if (!parsedEvent.success) {
@@ -113,7 +113,7 @@ export const useGame = ({ socketRef }: Input) => {
         return;
       }
 
-      match(parsedEvent.data)
+      await match(parsedEvent.data)
         .with({ kind: "init-game" }, ({ gameState }) => {
           setGameState(gameState);
         })
