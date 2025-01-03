@@ -26,6 +26,8 @@ type Props = {
   gameState: GameState;
   playerCardRefs: Record<SeatId, RefObject<HTMLDivElement | null>>;
   opponentCard: OpponentCard | undefined;
+  plyerFloatingTexts: Record<SeatId, string>;
+  playerFloatingTextRefs: Record<SeatId, RefObject<HTMLDivElement | null>>;
 };
 
 export const PlayerAreaField: React.FC<Props> = ({
@@ -34,6 +36,8 @@ export const PlayerAreaField: React.FC<Props> = ({
   gameState,
   playerCardRefs,
   opponentCard,
+  plyerFloatingTexts,
+  playerFloatingTextRefs,
 }) => {
   return (
     <>
@@ -52,6 +56,8 @@ export const PlayerAreaField: React.FC<Props> = ({
               opponentCard={
                 opponentCard?.seatId === seatId ? opponentCard : undefined
               }
+              floatingText={plyerFloatingTexts[seatId]}
+              playerFloatingTextRef={playerFloatingTextRefs[seatId]}
             />
           </div>
         );

@@ -28,6 +28,8 @@ export const GameField = () => {
     playerCardRefs,
     opponentDrawCardRef,
     visibleOpponentDrawCard,
+    playerFloatingTexts,
+    playerFloatingTextRefs,
   } = useGame({ socketRef });
 
   return (
@@ -48,6 +50,8 @@ export const GameField = () => {
                 gameState={g}
                 playerCardRefs={playerCardRefs}
                 opponentCard={opponentCard}
+                plyerFloatingTexts={playerFloatingTexts}
+                playerFloatingTextRefs={playerFloatingTextRefs}
               />
               <Direction isClockwise={g.isClockwise} />
 

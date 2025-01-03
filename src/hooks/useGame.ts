@@ -18,9 +18,12 @@ import {
   discardOpponentCardAnimation,
   drawMyCardAnimation,
   drawOpponentCardAnimation,
+  floatingTextAnimation,
   tableBorderAnimation,
 } from "@/lib/animation";
 import { sleep } from "@/lib/utils";
+
+import { useSE } from "./useSE";
 
 export type PlayerRef = {
   id: SeatId;
@@ -42,6 +45,7 @@ type Input = {
 };
 
 export const useGame = ({ socketRef }: Input) => {
+  const { passSE, drawSE } = useSE();
   const [gameState, setGameState] = useState<GameState | undefined>(undefined);
   const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
     undefined,
@@ -49,12 +53,30 @@ export const useGame = ({ socketRef }: Input) => {
   const [dummyCard, setDummyCard] = useState<PlayerCard | undefined>(undefined);
   const [visibleOpponentDrawCard, setVisibleOpponentDrawCard] =
     useState<boolean>(false);
+  const [playerFloatingTexts, setPlayerFloatingTexts] = useState<
+    Record<SeatId, string>
+  >({ 1: "", 2: "", 3: "", 4: "", 5: "", 6: "" });
+
   const playerRefs = seatIds.map((seatId) => {
     return {
       id: seatId,
       ref: createRef<HTMLDivElement>(),
     };
   });
+  const playerFloatingTextRefs: Record<
+    SeatId,
+    RefObject<HTMLDivElement | null>
+  > = useMemo(
+    () => ({
+      1: createRef<HTMLDivElement>(),
+      2: createRef<HTMLDivElement>(),
+      3: createRef<HTMLDivElement>(),
+      4: createRef<HTMLDivElement>(),
+      5: createRef<HTMLDivElement>(),
+      6: createRef<HTMLDivElement>(),
+    }),
+    [],
+  );
   const deckRef = useRef<HTMLDivElement>(null);
   const topCardRef = useRef<HTMLDivElement>(null);
   const tableBorderRef = useRef<SVGRectElement>(null);
@@ -136,6 +158,13 @@ export const useGame = ({ socketRef }: Input) => {
         .with(
           { kind: "action", action: { kind: "pass" } },
           async ({ action, gameState }) => {
+            await floatingTextAnimation({
+              text: "PASS",
+              ref: playerFloatingTextRefs[action.seatId],
+              seatId: action.seatId,
+              setFloatingText: setPlayerFloatingTexts,
+              passSE,
+            });
             await tableBorderAnimation({
               tableBorderRef,
               anotherTableBorderRef,
@@ -157,7 +186,7 @@ export const useGame = ({ socketRef }: Input) => {
                 return;
               }
               setDummyCard(drawnCard);
-
+              drawSE();
               await drawMyCardAnimation({ dummyCardRef });
               setDummyCard(undefined);
               setGameState({
@@ -166,6 +195,7 @@ export const useGame = ({ socketRef }: Input) => {
               });
             } else {
               setVisibleOpponentDrawCard(true);
+              drawSE();
               await sleep(500);
               await drawOpponentCardAnimation({
                 opponentDrawCardRef,
@@ -177,13 +207,24 @@ export const useGame = ({ socketRef }: Input) => {
         )
         .exhaustive();
     };
-  }, [gameState?.myCards, myCardRefs, opponentCard, playerCardRefs, socketRef]);
+  }, [
+    drawSE,
+    gameState?.myCards,
+    myCardRefs,
+    opponentCard,
+    passSE,
+    playerCardRefs,
+    playerFloatingTextRefs,
+    socketRef,
+  ]);
 
   return {
     socketRef,
     gameState,
     opponentCard,
     dummyCard,
+    playerFloatingTexts,
+    playerFloatingTextRefs,
     dummyCardRef,
     myCardRefs,
     playerRefs,

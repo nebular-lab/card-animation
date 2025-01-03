@@ -5,12 +5,15 @@ import { Player } from "@/common/type/player";
 import { OpponentCard } from "@/hooks/useGame";
 
 import { Card } from "./card";
+import { FloatingText } from "./floatingText";
 
 type Props = {
   player: Player | undefined;
   isTurn: boolean;
   playerCardRef: RefObject<HTMLDivElement | null>;
   opponentCard: OpponentCard | undefined;
+  floatingText: string;
+  playerFloatingTextRef: RefObject<HTMLDivElement | null>;
 };
 
 export const PlayerArea = ({
@@ -18,6 +21,8 @@ export const PlayerArea = ({
   isTurn,
   playerCardRef,
   opponentCard,
+  floatingText,
+  playerFloatingTextRef,
 }: Props) => {
   return (
     <div className="relative h-[52px] w-[168px]">
@@ -47,7 +52,7 @@ export const PlayerArea = ({
           {player?.name ?? "-"}
         </div>
       </div>
-
+      <FloatingText ref={playerFloatingTextRef} text={floatingText} />
       <div
         ref={playerCardRef}
         className="absolute inset-y-0 left-0 m-auto size-fit"

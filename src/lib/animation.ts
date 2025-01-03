@@ -1,6 +1,6 @@
 import { animate } from "motion/react";
 import { equals, any } from "ramda";
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 import { DiscardAction } from "@/common/type/action";
 import { SeatId } from "@/common/type/seat";
@@ -228,4 +228,34 @@ export const drawOpponentCardAnimation = async (
     { x, y },
     { duration: 0.4, ease: "easeInOut" },
   );
+};
+
+type FloatingTextAnimationInput = {
+  ref: RefObject<HTMLDivElement | null>;
+  text: string;
+  setFloatingText: Dispatch<SetStateAction<Record<SeatId, string>>>;
+  seatId: SeatId;
+  passSE: () => void;
+};
+
+export const floatingTextAnimation = async (
+  input: FloatingTextAnimationInput,
+) => {
+  const { text, ref, seatId, setFloatingText, passSE } = input;
+
+  if (!ref.current) {
+    console.error("ref not found");
+    return;
+  }
+  setFloatingText((prev) => ({ ...prev, [seatId]: text }));
+  passSE();
+
+  // 1秒間表示してから、0.5秒かけて消すアニメーション
+  await animate(
+    ref.current,
+    { opacity: [1, 1, 0] },
+    { duration: 1, times: [0, 0.5, 1], ease: "easeInOut" },
+  );
+
+  setFloatingText((prev) => ({ ...prev, [seatId]: "" }));
 };
