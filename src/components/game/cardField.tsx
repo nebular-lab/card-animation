@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "motion/react";
-import { FC, RefObject } from "react";
+import { Dispatch, FC, RefObject, SetStateAction } from "react";
 
 import { PlayerCard } from "@/common/type/card";
 import { SeatId } from "@/common/type/seat";
@@ -15,6 +15,7 @@ type Props = {
   mySeatId: SeatId;
   dummyCard: PlayerCard | undefined;
   dummyCardRef: RefObject<HTMLDivElement | null>;
+  setCanPointerEvent: Dispatch<SetStateAction<boolean>>;
 };
 
 export const CardField: FC<Props> = ({
@@ -24,6 +25,7 @@ export const CardField: FC<Props> = ({
   mySeatId,
   dummyCard,
   dummyCardRef,
+  setCanPointerEvent,
 }) => {
   if (!cards) {
     return null;
@@ -34,14 +36,15 @@ export const CardField: FC<Props> = ({
       <AnimatePresence>
         {cards.map((card) => {
           const discard = () => {
-            action(
-              {
+            action({
+              action: {
                 kind: "discard",
                 card,
                 seatId: mySeatId,
               },
-              socketRef.current,
-            );
+              setCanPointerEvent,
+              webSocket: socketRef.current,
+            });
           };
           return (
             <motion.div
@@ -60,15 +63,6 @@ export const CardField: FC<Props> = ({
         <motion.div
           ref={dummyCardRef}
           whileHover={{ scale: 1.1 }}
-          onClick={
-            dummyCard
-              ? () =>
-                  action(
-                    { kind: "discard", card: dummyCard, seatId: mySeatId },
-                    socketRef.current,
-                  )
-              : undefined
-          }
           className={dummyCard ? "" : "opacity-0"}
           layout
         >

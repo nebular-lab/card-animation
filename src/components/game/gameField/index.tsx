@@ -30,10 +30,15 @@ export const GameField = () => {
     visibleOpponentDrawCard,
     playerFloatingTexts,
     playerFloatingTextRefs,
+    canPointerEvent,
+    setCanPointerEvent,
   } = useGame({ socketRef });
 
+  console.log("canPointerEvent", canPointerEvent);
   return (
-    <div className="relative h-[600px] w-[1024px] select-none bg-gray-800">
+    <div
+      className={`${canPointerEvent || "pointer-events-none"} relative h-[600px] w-[1024px] select-none bg-gray-800`}
+    >
       {match(gameState)
         .with(undefined, () => null)
         .otherwise((g) => (
@@ -68,12 +73,14 @@ export const GameField = () => {
               mySeatId={g.mySeatId}
               dummyCard={dummyCard}
               dummyCardRef={dummyCardRef}
+              setCanPointerEvent={setCanPointerEvent}
             />
             <ButtonField
               canDraw={g.canDraw}
               canPass={g.canPass}
               socketRef={socketRef}
               mySeatId={g.mySeatId}
+              setCanPointerEvent={setCanPointerEvent}
             />
           </>
         ))}

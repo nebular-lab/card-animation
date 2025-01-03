@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { RefObject } from "react";
+import { Dispatch, RefObject, SetStateAction } from "react";
 
 import { SeatId } from "@/common/type/seat";
 import { action } from "@/lib/action";
@@ -11,6 +11,7 @@ type Props = {
   canPass: boolean | undefined;
   socketRef: RefObject<WebSocket | null>;
   mySeatId: SeatId;
+  setCanPointerEvent: Dispatch<SetStateAction<boolean>>;
 };
 
 export const ButtonField = ({
@@ -18,12 +19,21 @@ export const ButtonField = ({
   canPass,
   socketRef,
   mySeatId,
+  setCanPointerEvent,
 }: Props) => {
   const passAction = () => {
-    action({ kind: "pass", seatId: mySeatId }, socketRef.current);
+    action({
+      action: { kind: "pass", seatId: mySeatId },
+      webSocket: socketRef.current,
+      setCanPointerEvent,
+    });
   };
   const drawAction = () => {
-    action({ kind: "draw", seatId: mySeatId }, socketRef.current);
+    action({
+      action: { kind: "draw", seatId: mySeatId },
+      webSocket: socketRef.current,
+      setCanPointerEvent,
+    });
   };
   return (
     <div className="absolute bottom-10 right-20 m-auto flex flex-col justify-center gap-1">

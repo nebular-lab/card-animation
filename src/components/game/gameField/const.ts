@@ -1,3 +1,4 @@
+import { cardRelation } from "@/common/const";
 import { Card, PlayerCard } from "@/common/type/card";
 import { InGameState } from "@/common/type/game";
 import { Player } from "@/common/type/player";
@@ -20,48 +21,32 @@ const topCard: Card = {
 
 const myCards: PlayerCard[] = [
   {
-    id: 1,
-    kind: "NumberCard",
-    color: "red",
-    number: 1,
+    ...cardRelation[1],
     canDiscard: true,
   },
   {
-    id: 5,
-    kind: "NumberCard",
-    color: "blue",
-    number: 2,
-    canDiscard: true,
+    ...cardRelation[23],
+    canDiscard: false,
   },
   {
-    id: 10,
-    kind: "NumberCard",
-    color: "blue",
-    number: 7,
-    canDiscard: true,
+    ...cardRelation[30],
+    canDiscard: false,
   },
   {
-    id: 20,
-    kind: "SkipCard",
-    color: "green",
-    canDiscard: true,
+    ...cardRelation[98],
+    canDiscard: false,
   },
   {
-    id: 30,
-    kind: "DrawTwoCard",
-    color: "blue",
-    canDiscard: true,
+    ...cardRelation[102],
+    canDiscard: false,
   },
   {
-    id: 40,
-    kind: "DrawTwoCard",
-    color: "yellow",
-    canDiscard: true,
+    ...cardRelation[104],
+    canDiscard: false,
   },
   {
-    id: 50,
-    kind: "WildDrawFourCard",
-    canDiscard: true,
+    ...cardRelation[110],
+    canDiscard: false,
   },
 ];
 
@@ -90,12 +75,7 @@ export const updatedGameState: InGameState = {
     return player;
   }),
   deckSize: 112,
-  topCard: {
-    id: 1,
-    kind: "NumberCard",
-    color: "red",
-    number: 1,
-  },
+  topCard: cardRelation[1],
   isClockwise: true,
   currentSeatId: 2,
   mySeatId: 1,
@@ -122,11 +102,7 @@ export const updatedGameState2: InGameState = {
     return player;
   }),
   deckSize: 112,
-  topCard: {
-    id: 1,
-    kind: "ReverseCard",
-    color: "red",
-  },
+  topCard: cardRelation[81],
   isClockwise: false,
   currentSeatId: 1,
   mySeatId: 1,
@@ -147,21 +123,14 @@ export const updatedGameState3: InGameState = {
     return player;
   }),
   deckSize: 111,
-  topCard: {
-    id: 1,
-    kind: "SkipCard",
-    color: "red",
-  },
+  topCard: cardRelation[81],
   isClockwise: false,
   currentSeatId: 1,
   mySeatId: 1,
   myCards: myCards
     .filter((card) => card.id !== 1)
     .concat({
-      id: 8,
-      kind: "NumberCard",
-      color: "red",
-      number: 8,
+      ...cardRelation[10],
       canDiscard: true,
     }),
   canDraw: false,
@@ -191,10 +160,7 @@ export const updatedGameState4: InGameState = {
   myCards: myCards
     .filter((card) => card.id !== 1)
     .concat({
-      id: 2,
-      kind: "NumberCard",
-      color: "red",
-      number: 8,
+      ...cardRelation[10],
       canDiscard: true,
     })
     .sort((a, b) => a.id - b.id),
@@ -231,10 +197,7 @@ export const updatedGameState5: InGameState = {
   myCards: myCards
     .filter((card) => card.id !== 1)
     .concat({
-      id: 2,
-      kind: "NumberCard",
-      color: "red",
-      number: 8,
+      ...cardRelation[10],
       canDiscard: true,
     })
     .sort((a, b) => a.id - b.id),

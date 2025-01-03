@@ -45,6 +45,7 @@ type Input = {
 
 export const useGame = ({ socketRef }: Input) => {
   const { passSE, drawSE } = useSE();
+  const [canPointerEvent, setCanPointerEvent] = useState<boolean>(true);
   const [gameState, setGameState] = useState<GameState | undefined>(undefined);
   const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
     undefined,
@@ -198,6 +199,8 @@ export const useGame = ({ socketRef }: Input) => {
           },
         )
         .exhaustive();
+
+      setCanPointerEvent(true);
     };
   }, [
     drawSE,
@@ -226,5 +229,7 @@ export const useGame = ({ socketRef }: Input) => {
     playerCardRefs,
     visibleOpponentDrawCard,
     opponentDrawCardRef,
+    canPointerEvent,
+    setCanPointerEvent,
   };
 };
