@@ -2,6 +2,7 @@ import { match } from "ts-pattern";
 
 import { seatIds } from "@/common/const";
 import { useGame } from "@/hooks/useGame";
+import { useSocket } from "@/hooks/useSocket";
 
 import { ButtonField } from "../buttonField";
 import { CardField } from "../cardField";
@@ -14,8 +15,8 @@ import TopCard from "../topCard";
 import { OpponentDrawCard } from "./opponentDrawCard";
 
 export const GameField = () => {
+  const { socketRef } = useSocket();
   const {
-    socketRef,
     gameState,
     opponentCard,
     dummyCard,
@@ -27,7 +28,7 @@ export const GameField = () => {
     playerCardRefs,
     opponentDrawCardRef,
     visibleOpponentDrawCard,
-  } = useGame();
+  } = useGame({ socketRef });
 
   return (
     <div className="relative h-[600px] w-[1024px] select-none bg-gray-800">
@@ -49,7 +50,7 @@ export const GameField = () => {
                 opponentCard={opponentCard}
               />
               <Direction isClockwise={g.isClockwise} />
-              
+
               <Deck deckSize={g.deckSize} />
               <OpponentDrawCard
                 opponentDrawCardRef={opponentDrawCardRef}

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { match } from "ts-pattern";
 
-import { MOCK_SERVER_URL, seatIds } from "@/common/const";
+import { seatIds } from "@/common/const";
 import { Card, PlayerCard } from "@/common/type/card";
 import { GameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
@@ -37,7 +37,11 @@ export type OpponentCard = {
   card: Card;
 };
 
-export const useGame = () => {
+type Input = {
+  socketRef: RefObject<WebSocket | null>;
+};
+
+export const useGame = ({ socketRef }: Input) => {
   const [gameState, setGameState] = useState<GameState | undefined>(undefined);
   const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
     undefined,
@@ -81,16 +85,6 @@ export const useGame = () => {
     }),
     [],
   );
-
-  const socketRef = useRef<WebSocket | null>(null);
-
-  useEffect(() => {
-    const webSocket = new WebSocket(MOCK_SERVER_URL);
-    socketRef.current = webSocket;
-    return () => {
-      webSocket.close();
-    };
-  }, []);
 
   useEffect(() => {
     if (!socketRef.current) {
@@ -183,7 +177,7 @@ export const useGame = () => {
         )
         .exhaustive();
     };
-  }, [gameState?.myCards, myCardRefs, opponentCard, playerCardRefs]);
+  }, [gameState?.myCards, myCardRefs, opponentCard, playerCardRefs, socketRef]);
 
   return {
     socketRef,
