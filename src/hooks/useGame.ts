@@ -44,7 +44,7 @@ type Input = {
 };
 
 export const useGame = ({ socketRef }: Input) => {
-  const { passSE, drawSE } = useSE();
+  const { passSE, discardSE } = useSE();
   const [canPointerEvent, setCanPointerEvent] = useState<boolean>(true);
   const [gameState, setGameState] = useState<GameState | undefined>(undefined);
   const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
@@ -124,6 +124,7 @@ export const useGame = ({ socketRef }: Input) => {
           { kind: "action", action: { kind: "discard" } },
           async ({ action, gameState }) => {
             if (gameState.mySeatId === action.seatId) {
+              discardSE();
               await discardMyCardAnimation({
                 action,
                 nextActonSeatId: gameState.currentSeatId,
@@ -136,6 +137,7 @@ export const useGame = ({ socketRef }: Input) => {
             } else {
               setOpponentCard({ seatId: action.seatId, card: action.card });
               await sleep(500);
+              discardSE();
               await discardOpponentCardAnimation({
                 action,
                 nextActionSeatId: gameState.currentSeatId,
@@ -179,7 +181,7 @@ export const useGame = ({ socketRef }: Input) => {
                 return;
               }
               setDummyCard(drawnCard);
-              drawSE();
+              discardSE();
               await drawMyCardAnimation({ dummyCardRef });
               setDummyCard(undefined);
               setGameState({
@@ -188,7 +190,7 @@ export const useGame = ({ socketRef }: Input) => {
               });
             } else {
               setVisibleOpponentDrawCard(true);
-              drawSE();
+              discardSE();
               await sleep(500);
               await drawOpponentCardAnimation({
                 opponentDrawCardRef,
@@ -203,7 +205,7 @@ export const useGame = ({ socketRef }: Input) => {
       setCanPointerEvent(true);
     };
   }, [
-    drawSE,
+    discardSE,
     gameState?.myCards,
     myCardRefs,
     opponentCard,

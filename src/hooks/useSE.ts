@@ -6,5 +6,8 @@ export const useSE = () => {
   const [drawSE] = useSound("/sound/draw.mp3", {
     volume: 0.5,
   });
-  return { passSE, drawSE };
+  const [discardSE] = useSound("/sound/discard.mp3", {
+    volume: 0.5,
+  });
+  return { passSE, drawSE, discardSE };
 };
