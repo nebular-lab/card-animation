@@ -11,22 +11,16 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.config({
-    extends: [
-      "next/core-web-vitals",
-      "next/typescript",
-    ],
-    plugins: [
-      "import",
-      "unused-imports",
-    ],
-    "rules": {
+    extends: ["next/core-web-vitals", "next/typescript"],
+    plugins: ["import", "unused-imports"],
+    rules: {
       "@typescript-eslint/no-unused-vars": "off",
       "unused-imports/no-unused-imports": "warn",
       "unused-imports/no-unused-vars": "warn",
       "import/order": [
         "warn",
         {
-          "groups": [
+          groups: [
             "builtin",
             "external",
             "internal",
@@ -34,27 +28,25 @@ const eslintConfig = [
             "sibling",
             "index",
             "object",
-            "type"
+            "type",
           ],
           "newlines-between": "always",
-          "pathGroupsExcludedImportTypes": [
-            "builtin"
-          ],
-          "alphabetize": {
-            "order": "asc",
-            "caseInsensitive": true
+          pathGroupsExcludedImportTypes: ["builtin"],
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
           },
-          "pathGroups": [
+          pathGroups: [
             {
-              "pattern": "src/types/**",
-              "group": "internal",
-              "position": "before"
-            }
-          ]
-        }
-      ]
-    }
-  })
+              pattern: "src/types/**",
+              group: "internal",
+              position: "before",
+            },
+          ],
+        },
+      ],
+    },
+  }),
 ];
 
 export default eslintConfig;
