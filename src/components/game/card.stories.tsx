@@ -1,4 +1,6 @@
-import { Meta } from "@storybook/react";
+import { Meta, StoryObj } from "@storybook/react";
+
+import { cardRelation } from "@/common/const";
 
 import { Card } from "./card";
 
@@ -9,78 +11,60 @@ const meta = {
   },
 } satisfies Meta<typeof Card>;
 
+type Story = StoryObj<typeof Card>;
+
 export default meta;
 
-export const NumberCard = {
+export const NumberCard: Story = {
   args: {
-    cardVariant: {
-      kind: "NumberCard",
-      color: "red",
-      number: 5,
-    },
+    cardVariant: cardRelation[1],
     size: "md",
   },
 };
 
-export const ForceWildCard = {
+export const ForceWildCard: Story = {
   args: {
-    cardVariant: {
-      kind: "ForceWildCard",
-      selectColor: "red",
-    },
+    cardVariant: cardRelation[77],
     size: "md",
   },
 };
 
-export const ReverseCard = {
+export const ReverseCard: Story = {
   args: {
-    cardVariant: {
-      kind: "ReverseCard",
-      color: "red",
-    },
+    cardVariant: cardRelation[81],
     size: "md",
   },
 };
 
-export const SkipCard = {
+export const SkipCard: Story = {
   args: {
-    cardVariant: {
-      kind: "SkipCard",
-      color: "red",
-    },
+    cardVariant: cardRelation[85],
     size: "md",
   },
 };
 
-export const DrawTwoCard = {
+export const DrawTwoCard: Story = {
   args: {
-    cardVariant: {
-      kind: "DrawTwoCard",
-      color: "red",
-    },
+    cardVariant: cardRelation[83],
     size: "md",
   },
 };
 
-export const WildCard = {
+export const WildCard: Story = {
   args: {
-    cardVariant: {
-      kind: "WildCard",
-    },
+    cardVariant: cardRelation[105],
     size: "md",
   },
 };
 
-export const DrawFourCard = {
+export const DrawFourCard: Story = {
   args: {
-    cardVariant: {
-      kind: "WildDrawFourCard",
-    },
+    cardVariant: cardRelation[109],
     size: "md",
   },
 };
 
-export const HiddenCard = {
+export const HiddenCard: Story = {
   args: {
     cardVariant: {
       kind: "HiddenCard",
