@@ -8,7 +8,6 @@ import {
 } from "react";
 import { match } from "ts-pattern";
 
-import { seatIds } from "@/common/const";
 import { Card, PlayerCard } from "@/common/type/card";
 import { GameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
@@ -56,13 +55,6 @@ export const useGame = ({ socketRef }: Input) => {
   const [playerFloatingTexts, setPlayerFloatingTexts] = useState<
     Record<SeatId, string>
   >({ 1: "", 2: "", 3: "", 4: "", 5: "", 6: "" });
-
-  const playerRefs = seatIds.map((seatId) => {
-    return {
-      id: seatId,
-      ref: createRef<HTMLDivElement>(),
-    };
-  });
   const playerFloatingTextRefs: Record<
     SeatId,
     RefObject<HTMLDivElement | null>
@@ -227,7 +219,6 @@ export const useGame = ({ socketRef }: Input) => {
     playerFloatingTextRefs,
     dummyCardRef,
     myCardRefs,
-    playerRefs,
     deckRef,
     topCardRef,
     tableBorderRef,
