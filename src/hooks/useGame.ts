@@ -381,6 +381,13 @@ export const useGame = ({ socketRef }: Input) => {
               await sleep(100);
             }
 
+            setGameState((prev) => {
+              return {
+                ...prev,
+                deckSize: newGameState.deckSize + 1,
+              } as GameState; //TODO 対処
+            });
+
             await sleep(1500);
 
             discardSE();
