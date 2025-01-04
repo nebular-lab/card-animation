@@ -315,8 +315,6 @@ export const useGame = ({ socketRef }: Input) => {
                 setDummyCard(drawnCard);
                 drawMyCardAnimation({
                   dummyCardRef,
-                }).then(() => {
-                  setCardCount();
                 });
                 setDummyCard(undefined);
                 setGameState((prev) => {
@@ -333,16 +331,14 @@ export const useGame = ({ socketRef }: Input) => {
               }).then(() => {
                 setCardCount();
               });
-
               await sleep(100);
             }
-
-            setOpponentDrawCards([]);
 
             await sleep(1500);
 
             discardSE();
             setGameState(newGameState);
+            setOpponentDrawCards([]);
           },
         )
         .exhaustive();
