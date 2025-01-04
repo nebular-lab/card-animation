@@ -37,6 +37,7 @@ export const CardField: FC<Props> = ({
                 kind: "discard",
                 card,
                 seatId: mySeatId,
+                isUNO: cards.length === 2,
               },
               setCanPointerEvent,
               webSocket: socketRef.current,

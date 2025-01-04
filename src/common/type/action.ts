@@ -7,6 +7,7 @@ const discardActionSchema = z.object({
   kind: z.literal("discard"),
   seatId: seatIdSchema,
   card: cardSchema,
+  isUNO: z.boolean(),
 });
 
 export type DiscardAction = z.infer<typeof discardActionSchema>;

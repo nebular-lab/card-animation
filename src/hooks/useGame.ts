@@ -45,7 +45,7 @@ type Input = {
 };
 
 export const useGame = ({ socketRef }: Input) => {
-  const { passSE, discardSE } = useSE();
+  const { passSE, discardSE, unoSE } = useSE();
   const [canPointerEvent, setCanPointerEvent] = useState<boolean>(true);
   const [gameState, setGameState] = useState<GameState>(
     notInitializedGameState,
@@ -125,6 +125,15 @@ export const useGame = ({ socketRef }: Input) => {
           async ({ action, gameState }) => {
             if (gameState.mySeatId === action.seatId) {
               discardSE();
+              if (action.isUNO) {
+                floatingTextAnimation({
+                  text: "UNO",
+                  ref: playerFloatingTextRefs[action.seatId],
+                  seatId: action.seatId,
+                  setFloatingText: setPlayerFloatingTexts,
+                  SE: unoSE,
+                });
+              }
               await discardMyCardAnimation({
                 action,
                 nextActonSeatId: gameState.currentSeatId,
@@ -138,6 +147,15 @@ export const useGame = ({ socketRef }: Input) => {
               setOpponentCard({ seatId: action.seatId, card: action.card });
               await sleep(500);
               discardSE();
+              if (action.isUNO) {
+                floatingTextAnimation({
+                  text: "UNO",
+                  ref: playerFloatingTextRefs[action.seatId],
+                  seatId: action.seatId,
+                  setFloatingText: setPlayerFloatingTexts,
+                  SE: unoSE,
+                });
+              }
               await discardOpponentCardAnimation({
                 action,
                 nextActionSeatId: gameState.currentSeatId,
@@ -158,7 +176,7 @@ export const useGame = ({ socketRef }: Input) => {
               ref: playerFloatingTextRefs[action.seatId],
               seatId: action.seatId,
               setFloatingText: setPlayerFloatingTexts,
-              passSE,
+              SE: passSE,
             });
             await tableBorderAnimation({
               tableBorderRef,

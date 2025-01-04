@@ -3,13 +3,16 @@ import { ws } from "msw";
 import { match } from "ts-pattern";
 import { z } from "zod";
 
-import { MOCK_SERVER_URL } from "@/common/const";
+import { cardRelation, MOCK_SERVER_URL } from "@/common/const";
 import { actionSchema } from "@/common/type/action";
 import { sleep } from "@/lib/utils";
 import { wsSend } from "@/lib/websocket";
 
 import {
   gameState10,
+  gameState11,
+  gameState12,
+  gameState13,
   gameState9,
   initialGameState,
   notStartedGameState,
@@ -97,6 +100,7 @@ export const EnemyDiscardCard: Story = {
                 kind: "ReverseCard",
                 color: "red",
               },
+              isUNO: false,
             },
             gameState: updatedGameState2,
           });
@@ -348,6 +352,73 @@ export const StartGame: Story = {
                 console.error("unexpected action");
                 return;
               });
+          });
+        }),
+      ],
+    },
+  },
+};
+
+export const HeroUno: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "init-game",
+            gameState: gameState11,
+          });
+          connection.client.addEventListener("message", (event) => {
+            const parsedData = receivedActionSchema.safeParse(
+              JSON.parse(event.data.toString()),
+            );
+            if (!parsedData.success) {
+              console.error(parsedData.error);
+              return;
+            }
+            match(parsedData.data)
+              .with({ action: { kind: "discard" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: gameState12,
+                });
+              })
+              .otherwise(() => {
+                console.error("unexpected action");
+                return;
+              });
+          });
+        }),
+      ],
+    },
+  },
+};
+
+export const EnemyUno: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "init-game",
+            gameState: gameState12,
+          });
+
+          await sleep(2000);
+          await wsSend(connection, {
+            kind: "action",
+            action: {
+              kind: "discard",
+              seatId: 2,
+              card: {
+                ...cardRelation[5],
+              },
+              isUNO: true,
+            },
+            gameState: gameState13,
           });
         }),
       ],

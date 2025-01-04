@@ -377,3 +377,109 @@ export const gameState10: InGameState = {
   canPass: false,
   canDrawStack: false,
 };
+
+export const gameState11: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 2,
+      };
+    } else if (player.seatId === 2) {
+      return {
+        ...player,
+        cardCount: 2,
+      };
+    } else {
+      return player;
+    }
+  }),
+  deckSize: 68,
+  topCard: cardRelation[1],
+  isClockwise: true,
+  currentSeatId: 1,
+  drawStack: 0,
+  mySeatId: 1,
+  myCards: [
+    {
+      ...cardRelation[3],
+      canDiscard: true,
+    },
+    {
+      ...cardRelation[109],
+      canDiscard: true,
+    },
+  ],
+  canDraw: true,
+  canPass: false,
+  canDrawStack: false,
+};
+
+export const gameState12: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 1,
+      };
+    } else if (player.seatId === 2) {
+      return {
+        ...player,
+        cardCount: 2,
+      };
+    } else {
+      return player;
+    }
+  }),
+  deckSize: 68,
+  topCard: cardRelation[3],
+  isClockwise: true,
+  currentSeatId: 2,
+  drawStack: 0,
+  mySeatId: 1,
+  myCards: [
+    {
+      ...cardRelation[109],
+      canDiscard: true,
+    },
+  ],
+  canDraw: false,
+  canPass: false,
+  canDrawStack: false,
+};
+
+export const gameState13: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 1,
+      };
+    } else if (player.seatId === 2) {
+      return {
+        ...player,
+        cardCount: 1,
+      };
+    } else {
+      return player;
+    }
+  }),
+  deckSize: 68,
+  topCard: cardRelation[5],
+  isClockwise: true,
+  currentSeatId: 3,
+  drawStack: 0,
+  mySeatId: 1,
+  myCards: [
+    {
+      ...cardRelation[109],
+      canDiscard: true,
+    },
+  ],
+  canDraw: false,
+  canPass: false,
+  canDrawStack: false,
+};

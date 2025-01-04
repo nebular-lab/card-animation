@@ -241,20 +241,21 @@ type FloatingTextAnimationInput = {
   text: string;
   setFloatingText: Dispatch<SetStateAction<Record<SeatId, string>>>;
   seatId: SeatId;
-  passSE: () => void;
+  SE?: () => void;
 };
 
 export const floatingTextAnimation = async (
   input: FloatingTextAnimationInput,
 ) => {
-  const { text, ref, seatId, setFloatingText, passSE } = input;
+  const { text, ref, seatId, setFloatingText, SE } = input;
 
   if (!ref.current) {
     console.error("ref not found");
     return;
   }
   setFloatingText((prev) => ({ ...prev, [seatId]: text }));
-  passSE();
+  
+  if (SE) SE();
 
   // 1秒間表示してから、0.5秒かけて消すアニメーション
   await animate(
