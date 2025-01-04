@@ -17,6 +17,7 @@ export const inGameStateSchema = z.object({
   myCards: z.array(playerCardSchema),
   canDraw: z.boolean(),
   canPass: z.boolean(),
+  canDrawStack: z.boolean(),
   canGameStart: z.undefined(),
 });
 
@@ -35,6 +36,7 @@ export const notStartedGameStateSchema = z.object({
   myCards: z.array(playerCardSchema),
   canDraw: z.undefined(),
   canPass: z.undefined(),
+  canDrawStack: z.undefined(),
   canGameStart: z.boolean(),
 });
 

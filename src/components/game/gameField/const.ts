@@ -66,6 +66,7 @@ export const initialGameState: InGameState = {
   myCards,
   canDraw: true,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState: InGameState = {
@@ -88,6 +89,7 @@ export const updatedGameState: InGameState = {
   myCards: myCards.filter((card) => card.id !== 1),
   canDraw: false,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState2: InGameState = {
@@ -116,6 +118,7 @@ export const updatedGameState2: InGameState = {
   myCards: myCards.filter((card) => card.id !== 1),
   canDraw: true,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState3: InGameState = {
@@ -143,6 +146,7 @@ export const updatedGameState3: InGameState = {
     }),
   canDraw: false,
   canPass: true,
+  canDrawStack: false,
 };
 
 export const updatedGameState4: InGameState = {
@@ -175,6 +179,7 @@ export const updatedGameState4: InGameState = {
     .sort((a, b) => a.id - b.id),
   canDraw: false,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState5: InGameState = {
@@ -213,6 +218,7 @@ export const updatedGameState5: InGameState = {
     .sort((a, b) => a.id - b.id),
   canDraw: false,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState6: InGameState = {
@@ -251,6 +257,7 @@ export const updatedGameState6: InGameState = {
     .sort((a, b) => a.id - b.id),
   canDraw: false,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState7: InGameState = {
@@ -273,6 +280,7 @@ export const updatedGameState7: InGameState = {
   myCards: myCards.filter((card) => card.id !== 83),
   canDraw: false,
   canPass: false,
+  canDrawStack: false,
 };
 
 export const updatedGameState8: InGameState = {
@@ -301,6 +309,7 @@ export const updatedGameState8: InGameState = {
   myCards: myCards.filter((card) => card.id !== 83),
   canDraw: false,
   canPass: false,
+  canDrawStack: false,
 };
 
 const notStartedPlayers: Player[] = [
@@ -324,4 +333,43 @@ export const notStartedGameState: NotStartedGameState = {
 export const notInitializedGameState: NotInitializedGameState = {
   kind: "not-initialized",
   myCards: [],
+};
+
+export const gameState9: InGameState = {
+  kind: "in-game",
+  players: players,
+  deckSize: 112,
+  topCard: cardRelation[83],
+  isClockwise: true,
+  currentSeatId: 1,
+  drawStack: 2,
+  mySeatId: 1,
+  myCards: myCards,
+  canDraw: false,
+  canPass: false,
+  canDrawStack: true,
+};
+
+export const gameState10: InGameState = {
+  kind: "in-game",
+  players: players,
+  deckSize: 110,
+  topCard: cardRelation[83],
+  isClockwise: true,
+  currentSeatId: 2,
+  drawStack: 0,
+  mySeatId: 1,
+  myCards: myCards
+    .concat({
+      ...cardRelation[109],
+      canDiscard: true,
+    })
+    .concat({
+      ...cardRelation[3],
+      canDiscard: true,
+    })
+    .sort((a, b) => a.id - b.id),
+  canDraw: false,
+  canPass: false,
+  canDrawStack: false,
 };

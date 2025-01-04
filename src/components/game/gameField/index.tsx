@@ -75,6 +75,8 @@ export const GameField = () => {
             <ButtonField
               canDraw={g.canDraw}
               canPass={g.canPass}
+              canDrawStack={g.canDrawStack}
+              drawStack={g.drawStack}
               canGameStart={g.canGameStart}
               socketRef={socketRef}
               mySeatId={g.mySeatId}

@@ -9,6 +9,8 @@ import { sleep } from "@/lib/utils";
 import { wsSend } from "@/lib/websocket";
 
 import {
+  gameState10,
+  gameState9,
   initialGameState,
   notStartedGameState,
   updatedGameState,
@@ -308,6 +310,43 @@ export const EnemyPass: Story = {
               seatId: 6,
             },
             gameState: updatedGameState6,
+          });
+        }),
+      ],
+    },
+  },
+};
+
+export const HeroDrawStack: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "init-game",
+            gameState: gameState9,
+          });
+          connection.client.addEventListener("message", (event) => {
+            const parsedData = receivedActionSchema.safeParse(
+              JSON.parse(event.data.toString()),
+            );
+            if (!parsedData.success) {
+              console.error(parsedData.error);
+              return;
+            }
+            match(parsedData.data)
+              .with({ action: { kind: "draw-stack" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: gameState10,
+                });
+              })
+              .otherwise(() => {
+                console.error("unexpected action");
+                return;
+              });
           });
         }),
       ],

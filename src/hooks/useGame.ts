@@ -153,7 +153,6 @@ export const useGame = ({ socketRef }: Input) => {
         .with(
           { kind: "action", action: { kind: "pass" } },
           async ({ action, gameState }) => {
-            console.log(playerFloatingTextRefs);
             await floatingTextAnimation({
               text: "PASS",
               ref: playerFloatingTextRefs[action.seatId],
@@ -205,9 +204,57 @@ export const useGame = ({ socketRef }: Input) => {
         )
         .with(
           { kind: "action", action: { kind: "draw-stack" } },
-          async ({ action, gameState }) => {
-            if (gameState.mySeatId === action.seatId) {
-              setGameState(gameState);
+          async ({ action, gameState: newGameState }) => {
+            if (newGameState.mySeatId === action.seatId) {
+              const cardRefs = Array.from({ length: action.count }, () =>
+                createRef<HTMLDivElement>(),
+              );
+              const drawCards = newGameState.myCards.filter((myCard) =>
+                gameState?.myCards?.every((card) => card.id !== myCard.id),
+              );
+              setOpponentDrawCards(cardRefs);
+              await sleep(200);
+              let index = 0;
+              for (const cardRef of cardRefs) {
+                drawOpponentCardAnimation({
+                  opponentDrawCardRef: cardRef,
+                  drawnPlayerAreaRef: playerCardRefs[action.seatId],
+                }).then(() => {
+                  const drawnCard = newGameState.myCards[index];
+                  setDummyCard(drawnCard);
+                  drawMyCardAnimation({
+                    dummyCardRef,
+                  });
+                  setDummyCard(undefined);
+                  setGameState((prev) => {
+                    return {
+                      ...prev,
+                      myCards: prev.myCards?.concat(drawnCard) ?? [],
+                    } as GameState; //TODO 対処
+                  });
+
+                  setGameState((prev) => {
+                    return {
+                      ...prev,
+                      players: prev?.players?.map((player) => {
+                        if (player.seatId === action.seatId) {
+                          return {
+                            ...player,
+                            cardCount: player.cardCount + 1,
+                          };
+                        } else {
+                          return player;
+                        }
+                      }),
+                    } as GameState; //TODO 対処
+                  });
+                });
+                await sleep(1000);
+                index++;
+              }
+              await sleep(500);
+              setOpponentDrawCards([]);
+              setGameState(newGameState);
             } else {
               const cardRefs = Array.from({ length: action.count }, () =>
                 createRef<HTMLDivElement>(),
@@ -227,7 +274,7 @@ export const useGame = ({ socketRef }: Input) => {
                 tableBorderRef,
                 anotherTableBorderRef,
                 fromSeatId: action.seatId,
-                toSeatId: gameState.currentSeatId,
+                toSeatId: newGameState.currentSeatId,
               });
               setGameState(gameState);
             }
@@ -310,27 +357,27 @@ export const useGame = ({ socketRef }: Input) => {
                 });
               };
 
-              if (kind === "hero") {
-                const drawnCard = newGameState.myCards[index];
-                setDummyCard(drawnCard);
-                drawMyCardAnimation({
-                  dummyCardRef,
-                });
-                setDummyCard(undefined);
-                setGameState((prev) => {
-                  return {
-                    ...prev,
-                    myCards: prev.myCards?.concat(drawnCard) ?? [],
-                  } as GameState; //TODO 対処
-                });
-              }
-
               drawOpponentCardAnimation({
                 opponentDrawCardRef: ref,
                 drawnPlayerAreaRef: playerCardRefs[seatId],
               }).then(() => {
+                if (kind === "hero") {
+                  const drawnCard = newGameState.myCards[index];
+                  setDummyCard(drawnCard);
+                  drawMyCardAnimation({
+                    dummyCardRef,
+                  });
+                  setDummyCard(undefined);
+                  setGameState((prev) => {
+                    return {
+                      ...prev,
+                      myCards: prev.myCards?.concat(drawnCard) ?? [],
+                    } as GameState; //TODO 対処
+                  });
+                }
                 setCardCount();
               });
+
               await sleep(100);
             }
 
