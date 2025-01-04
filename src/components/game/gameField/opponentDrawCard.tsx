@@ -3,18 +3,25 @@ import { RefObject } from "react";
 import { Card } from "../card";
 
 type Props = {
-  opponentDrawCardRef: RefObject<HTMLDivElement | null>;
-  visibleOpponentDrawCard: boolean;
+  opponentDrawCards: RefObject<HTMLDivElement | null>[];
 };
 
 export const OpponentDrawCard = (props: Props) => {
-  const { opponentDrawCardRef, visibleOpponentDrawCard } = props;
+  const { opponentDrawCards } = props;
+
   return (
-    <div
-      ref={opponentDrawCardRef}
-      className="absolute inset-0 right-[30%] m-auto size-fit"
-    >
-      {visibleOpponentDrawCard && <Card cardVariant={{ kind: "HiddenCard" }} />}
-    </div>
+    <>
+      {opponentDrawCards.map((opponentDrawCardRef, index) => {
+        return (
+          <div
+            key={index}
+            ref={opponentDrawCardRef}
+            className="absolute inset-0 right-[30%] m-auto size-fit"
+          >
+            <Card cardVariant={{ kind: "HiddenCard" }} />
+          </div>
+        );
+      })}
+    </>
   );
 };

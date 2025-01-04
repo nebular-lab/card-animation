@@ -33,8 +33,8 @@ const myCards: PlayerCard[] = [
     canDiscard: false,
   },
   {
-    ...cardRelation[98],
-    canDiscard: false,
+    ...cardRelation[83],
+    canDiscard: true,
   },
   {
     ...cardRelation[102],
@@ -46,7 +46,7 @@ const myCards: PlayerCard[] = [
   },
   {
     ...cardRelation[110],
-    canDiscard: false,
+    canDiscard: true,
   },
 ];
 
@@ -57,6 +57,7 @@ export const initialGameState: InGameState = {
   topCard,
   isClockwise: true,
   currentSeatId: 1,
+  drawStack: 0,
   mySeatId: 1,
   myCards,
   canDraw: true,
@@ -78,6 +79,7 @@ export const updatedGameState: InGameState = {
   topCard: cardRelation[1],
   isClockwise: true,
   currentSeatId: 2,
+  drawStack: 0,
   mySeatId: 1,
   myCards: myCards.filter((card) => card.id !== 1),
   canDraw: false,
@@ -105,6 +107,7 @@ export const updatedGameState2: InGameState = {
   topCard: cardRelation[81],
   isClockwise: false,
   currentSeatId: 1,
+  drawStack: 0,
   mySeatId: 1,
   myCards: myCards.filter((card) => card.id !== 1),
   canDraw: true,
@@ -126,6 +129,7 @@ export const updatedGameState3: InGameState = {
   topCard: cardRelation[81],
   isClockwise: false,
   currentSeatId: 1,
+  drawStack: 0,
   mySeatId: 1,
   myCards: myCards
     .filter((card) => card.id !== 1)
@@ -156,6 +160,7 @@ export const updatedGameState4: InGameState = {
   },
   isClockwise: false,
   currentSeatId: 6,
+  drawStack: 0,
   mySeatId: 1,
   myCards: myCards
     .filter((card) => card.id !== 1)
@@ -193,6 +198,7 @@ export const updatedGameState5: InGameState = {
   },
   isClockwise: false,
   currentSeatId: 6,
+  drawStack: 0,
   mySeatId: 1,
   myCards: myCards
     .filter((card) => card.id !== 1)
@@ -230,6 +236,7 @@ export const updatedGameState6: InGameState = {
   },
   isClockwise: false,
   currentSeatId: 5,
+  drawStack: 0,
   mySeatId: 1,
   myCards: myCards
     .filter((card) => card.id !== 1)
@@ -238,6 +245,56 @@ export const updatedGameState6: InGameState = {
       canDiscard: true,
     })
     .sort((a, b) => a.id - b.id),
+  canDraw: false,
+  canPass: false,
+};
+
+export const updatedGameState7: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 6,
+      };
+    }
+    return player;
+  }),
+  deckSize: 112,
+  topCard: cardRelation[83],
+  isClockwise: true,
+  currentSeatId: 2,
+  drawStack: 2,
+  mySeatId: 1,
+  myCards: myCards.filter((card) => card.id !== 83),
+  canDraw: false,
+  canPass: false,
+};
+
+export const updatedGameState8: InGameState = {
+  kind: "in-game",
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 6,
+      };
+    }
+    if (player.seatId === 2) {
+      return {
+        ...player,
+        cardCount: 9,
+      };
+    }
+    return player;
+  }),
+  deckSize: 110,
+  topCard: cardRelation[83],
+  isClockwise: true,
+  currentSeatId: 3,
+  drawStack: 0,
+  mySeatId: 1,
+  myCards: myCards.filter((card) => card.id !== 83),
   canDraw: false,
   canPass: false,
 };

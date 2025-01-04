@@ -45,7 +45,13 @@ export const PlayerArea = ({
           className={`absolute inset-y-[-2px] left-[-2px] flex aspect-square items-center justify-center rounded-full border-2 ${isTurn ? "border-yellow-500" : "border-border"} text-white`}
         >
           {player?.cardCount ?? "-"}
+          <div ref={playerCardRef} className="absolute inset-0">
+            {opponentCard?.card && (
+              <Card cardVariant={opponentCard.card} size="md" />
+            )}
+          </div>
         </div>
+
         <div
           className={`flex h-full items-center justify-center pl-[40px] text-white`}
         >
@@ -55,14 +61,6 @@ export const PlayerArea = ({
       {floatingText && (
         <FloatingText ref={playerFloatingTextRef} text={floatingText} />
       )}
-      <div
-        ref={playerCardRef}
-        className="absolute inset-y-0 left-0 m-auto size-fit"
-      >
-        {opponentCard?.card && (
-          <Card cardVariant={opponentCard.card} size="md" />
-        )}
-      </div>
     </div>
   );
 };

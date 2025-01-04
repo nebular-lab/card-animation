@@ -25,10 +25,17 @@ export const drawActionSchema = z.object({
 
 export type DrawAction = z.infer<typeof drawActionSchema>;
 
+export const drawStackActionSchema = z.object({
+  kind: z.literal("draw-stack"),
+  seatId: seatIdSchema,
+  count: z.number(),
+});
+
 export const actionSchema = z.union([
   discardActionSchema,
   passActionSchema,
   drawActionSchema,
+  drawStackActionSchema,
 ]);
 
 export type Action = z.infer<typeof actionSchema>;

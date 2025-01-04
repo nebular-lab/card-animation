@@ -13,6 +13,7 @@ import { TableBorder } from "../tableBorder";
 import TopCard from "../topCard";
 
 import { OpponentDrawCard } from "./opponentDrawCard";
+import { DrawStack } from "../drawStack";
 
 export const GameField = () => {
   const { socketRef } = useSocket();
@@ -26,8 +27,7 @@ export const GameField = () => {
     anotherTableBorderRef,
     topCardRef,
     playerCardRefs,
-    opponentDrawCardRef,
-    visibleOpponentDrawCard,
+    opponentDrawCards,
     playerFloatingTexts,
     playerFloatingTextRefs,
     canPointerEvent,
@@ -60,10 +60,8 @@ export const GameField = () => {
               <Direction isClockwise={g.isClockwise} />
 
               <Deck deckSize={g.deckSize} />
-              <OpponentDrawCard
-                opponentDrawCardRef={opponentDrawCardRef}
-                visibleOpponentDrawCard={visibleOpponentDrawCard}
-              />
+              <DrawStack drawStack={g.drawStack} />
+              <OpponentDrawCard opponentDrawCards={opponentDrawCards} />
             </div>
             <CardField
               cards={g.myCards}

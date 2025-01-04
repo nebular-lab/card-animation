@@ -51,8 +51,9 @@ export const useGame = ({ socketRef }: Input) => {
     undefined,
   );
   const [dummyCard, setDummyCard] = useState<PlayerCard | undefined>(undefined);
-  const [visibleOpponentDrawCard, setVisibleOpponentDrawCard] =
-    useState<boolean>(false);
+  const [opponentDrawCards, setOpponentDrawCards] = useState<
+    RefObject<HTMLDivElement | null>[]
+  >([]);
   const [playerFloatingTexts, setPlayerFloatingTexts] = useState<
     Record<SeatId, string>
   >({ 1: "", 2: "", 3: "", 4: "", 5: "", 6: "" });
@@ -85,7 +86,6 @@ export const useGame = ({ socketRef }: Input) => {
     [gameState?.myCards],
   );
   const dummyCardRef = useRef<HTMLDivElement>(null);
-  const opponentDrawCardRef = useRef<HTMLDivElement>(null);
   const playerCardRefs: Record<
     SeatId,
     RefObject<HTMLDivElement | null>
@@ -189,14 +189,46 @@ export const useGame = ({ socketRef }: Input) => {
                 myCards: gameState?.myCards?.concat(drawnCard) ?? [],
               });
             } else {
-              setVisibleOpponentDrawCard(true);
+              const cardRef = createRef<HTMLDivElement>();
+              setOpponentDrawCards([cardRef]);
               discardSE();
               await sleep(500);
               await drawOpponentCardAnimation({
-                opponentDrawCardRef,
+                opponentDrawCardRef: cardRef,
                 drawnPlayerAreaRef: playerCardRefs[action.seatId],
               });
-              setVisibleOpponentDrawCard(false);
+              setOpponentDrawCards([]);
+              setGameState(newGameState);
+            }
+          },
+        )
+        .with(
+          { kind: "action", action: { kind: "draw-stack" } },
+          async ({ action, gameState }) => {
+            if (gameState.mySeatId === action.seatId) {
+              setGameState(gameState);
+            } else {
+              const cardRefs = Array.from({ length: action.count }, () =>
+                createRef<HTMLDivElement>(),
+              );
+              setOpponentDrawCards(cardRefs);
+              await sleep(200);
+              for (const cardRef of cardRefs) {
+                discardSE();
+                await drawOpponentCardAnimation({
+                  opponentDrawCardRef: cardRef,
+                  drawnPlayerAreaRef: playerCardRefs[action.seatId],
+                });
+                await sleep(100);
+              }
+              setOpponentDrawCards([]);
+              await tableBorderAnimation({
+                tableBorderRef,
+                anotherTableBorderRef,
+                fromSeatId: action.seatId,
+                toSeatId: gameState.currentSeatId,
+              });
+              setGameState(gameState);
             }
           },
         )
@@ -209,6 +241,7 @@ export const useGame = ({ socketRef }: Input) => {
     gameState?.myCards,
     myCardRefs,
     opponentCard,
+    opponentDrawCards,
     passSE,
     playerCardRefs,
     playerFloatingTextRefs,
@@ -229,8 +262,7 @@ export const useGame = ({ socketRef }: Input) => {
     tableBorderRef,
     anotherTableBorderRef,
     playerCardRefs,
-    visibleOpponentDrawCard,
-    opponentDrawCardRef,
+    opponentDrawCards,
     canPointerEvent,
     setCanPointerEvent,
   };

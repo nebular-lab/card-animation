@@ -11,6 +11,7 @@ export const inGameStateSchema = z.object({
   topCard: cardSchema,
   isClockwise: z.boolean(),
   currentSeatId: seatIdSchema,
+  drawStack: z.number(),
 
   mySeatId: seatIdSchema,
   myCards: z.array(playerCardSchema),
@@ -27,6 +28,7 @@ export const notStartedGameStateSchema = z.object({
   topCard: z.undefined(),
   isClockwise: z.undefined(),
   currentSeatId: z.undefined(),
+  drawStack: z.undefined(),
 
   mySeatId: seatIdSchema,
   myCards: z.undefined(),

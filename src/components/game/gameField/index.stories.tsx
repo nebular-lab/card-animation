@@ -16,6 +16,8 @@ import {
   updatedGameState4,
   updatedGameState5,
   updatedGameState6,
+  updatedGameState7,
+  updatedGameState8,
 } from "./const";
 
 import { GameField } from ".";
@@ -305,6 +307,55 @@ export const EnemyPass: Story = {
               seatId: 6,
             },
             gameState: updatedGameState6,
+          });
+        }),
+      ],
+    },
+  },
+};
+
+export const EnemyDrawStack: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "start-game",
+            gameState: initialGameState,
+          });
+          connection.client.addEventListener("message", (event) => {
+            const parsedData = receivedActionSchema.safeParse(
+              JSON.parse(event.data.toString()),
+            );
+            if (!parsedData.success) {
+              console.error(parsedData.error);
+              return;
+            }
+            match(parsedData.data)
+              .with({ action: { kind: "discard" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: updatedGameState7,
+                });
+
+                await sleep(4000);
+
+                await wsSend(connection, {
+                  kind: "action",
+                  action: {
+                    kind: "draw-stack",
+                    seatId: 2,
+                    count: 2,
+                  },
+                  gameState: updatedGameState8,
+                });
+              })
+              .otherwise(() => {
+                console.error("unexpected action");
+                return;
+              });
           });
         }),
       ],
