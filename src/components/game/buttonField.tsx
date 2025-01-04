@@ -9,6 +9,7 @@ import { Button } from "../shadcn/button";
 type Props = {
   canDraw: boolean | undefined;
   canPass: boolean | undefined;
+  canGameStart: boolean | undefined;
   socketRef: RefObject<WebSocket | null>;
   mySeatId: SeatId;
   setCanPointerEvent: Dispatch<SetStateAction<boolean>>;
@@ -17,6 +18,7 @@ type Props = {
 export const ButtonField = ({
   canDraw,
   canPass,
+  canGameStart,
   socketRef,
   mySeatId,
   setCanPointerEvent,
@@ -48,6 +50,23 @@ export const ButtonField = ({
         <motion.div whileHover={{ scale: 1.1 }} layout>
           <Button onClick={drawAction} variant="game" size="lg">
             カードを引く
+          </Button>
+        </motion.div>
+      )}
+      {canGameStart && (
+        <motion.div whileHover={{ scale: 1.1 }} layout>
+          <Button
+            onClick={() => {
+              action({
+                action: { kind: "start" },
+                webSocket: socketRef.current,
+                setCanPointerEvent,
+              });
+            }}
+            variant="game"
+            size="lg"
+          >
+            ゲームスタート
           </Button>
         </motion.div>
       )}

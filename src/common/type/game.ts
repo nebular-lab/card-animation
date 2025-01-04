@@ -17,6 +17,7 @@ export const inGameStateSchema = z.object({
   myCards: z.array(playerCardSchema),
   canDraw: z.boolean(),
   canPass: z.boolean(),
+  canGameStart: z.undefined(),
 });
 
 export type InGameState = z.infer<typeof inGameStateSchema>;
@@ -24,7 +25,7 @@ export type InGameState = z.infer<typeof inGameStateSchema>;
 export const notStartedGameStateSchema = z.object({
   kind: z.literal("not-started"),
   players: z.array(playerSchema),
-  deckSize: z.undefined(),
+  deckSize: z.number(),
   topCard: z.undefined(),
   isClockwise: z.undefined(),
   currentSeatId: z.undefined(),
@@ -34,13 +35,33 @@ export const notStartedGameStateSchema = z.object({
   myCards: z.undefined(),
   canDraw: z.undefined(),
   canPass: z.undefined(),
+  canGameStart: z.boolean(),
 });
 
 export type NotStartedGameState = z.infer<typeof notStartedGameStateSchema>;
 
+export const NotInitializedGameState = z.object({
+  kind: z.literal("not-initialized"),
+  players: z.undefined(),
+  deckSize: z.undefined(),
+  topCard: z.undefined(),
+  isClockwise: z.undefined(),
+  currentSeatId: z.undefined(),
+  drawStack: z.undefined(),
+
+  mySeatId: z.undefined(),
+  myCards: z.undefined(),
+  canDraw: z.undefined(),
+  canPass: z.undefined(),
+  canGameStart: z.undefined(),
+});
+
+export type NotInitializedGameState = z.infer<typeof NotInitializedGameState>;
+
 export const gameStateSchema = z.union([
   inGameStateSchema,
   notStartedGameStateSchema,
+  NotInitializedGameState,
 ]);
 
 export type GameState = z.infer<typeof gameStateSchema>;

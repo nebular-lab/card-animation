@@ -8,12 +8,12 @@ import { ButtonField } from "../buttonField";
 import { CardField } from "../cardField";
 import { Deck } from "../deck";
 import { Direction } from "../direction";
+import { DrawStack } from "../drawStack";
 import { PlayerAreaField } from "../playerField";
 import { TableBorder } from "../tableBorder";
 import TopCard from "../topCard";
 
 import { OpponentDrawCard } from "./opponentDrawCard";
-import { DrawStack } from "../drawStack";
 
 export const GameField = () => {
   const { socketRef } = useSocket();
@@ -39,7 +39,7 @@ export const GameField = () => {
       className={`${canPointerEvent || "pointer-events-none"} relative h-[600px] w-[1024px] select-none bg-gray-800`}
     >
       {match(gameState)
-        .with(undefined, () => null)
+        .with({ kind: "not-initialized" }, () => null)
         .otherwise((g) => (
           <>
             <div className="absolute inset-x-0 top-20 m-auto h-[320px] w-[700px]">
@@ -75,6 +75,7 @@ export const GameField = () => {
             <ButtonField
               canDraw={g.canDraw}
               canPass={g.canPass}
+              canGameStart={g.canGameStart}
               socketRef={socketRef}
               mySeatId={g.mySeatId}
               setCanPointerEvent={setCanPointerEvent}

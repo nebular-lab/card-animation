@@ -12,6 +12,7 @@ import { Card, PlayerCard } from "@/common/type/card";
 import { GameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
 import { socketEventSchema } from "@/common/type/socketEvent";
+import { notInitializedGameState } from "@/components/game/gameField/const";
 import {
   discardMyCardAnimation,
   discardOpponentCardAnimation,
@@ -46,7 +47,9 @@ type Input = {
 export const useGame = ({ socketRef }: Input) => {
   const { passSE, discardSE } = useSE();
   const [canPointerEvent, setCanPointerEvent] = useState<boolean>(true);
-  const [gameState, setGameState] = useState<GameState | undefined>(undefined);
+  const [gameState, setGameState] = useState<GameState>(
+    notInitializedGameState,
+  );
   const [opponentCard, setOpponentCard] = useState<OpponentCard | undefined>(
     undefined,
   );
@@ -115,9 +118,6 @@ export const useGame = ({ socketRef }: Input) => {
 
       await match(parsedEvent.data)
         .with({ kind: "init-game" }, ({ gameState }) => {
-          setGameState(gameState);
-        })
-        .with({ kind: "start-game" }, ({ gameState }) => {
           setGameState(gameState);
         })
         .with(
@@ -232,12 +232,136 @@ export const useGame = ({ socketRef }: Input) => {
             }
           },
         )
+        .with(
+          { kind: "action", action: { kind: "start" } },
+          async ({ gameState: newGameState }) => {
+            setGameState({
+              kind: "not-started",
+              players: newGameState.players.map((player) => ({
+                ...player,
+                cardCount: 0,
+              })),
+              deckSize: 112,
+              mySeatId: newGameState.mySeatId,
+              canGameStart: !!gameState?.canGameStart,
+            });
+            await sleep(200);
+
+            type CardRef =
+              | {
+                  kind: "hero";
+                  ref: RefObject<HTMLDivElement | null>;
+                  index: number;
+                  seatId: SeatId;
+                }
+              | {
+                  kind: "opponent";
+                  ref: RefObject<HTMLDivElement | null>;
+                  seatId: SeatId;
+                  index: undefined;
+                };
+            const cardRefs: CardRef[] = Array.from(
+              { length: newGameState.players.length * 7 },
+              (_, index) => {
+                const seatId =
+                  newGameState.players[index % newGameState.players.length]
+                    .seatId;
+
+                if (seatId === newGameState.mySeatId) {
+                  return {
+                    kind: "hero",
+                    ref: createRef<HTMLDivElement>(),
+                    index: index / newGameState.players.length - 1,
+                    seatId,
+                  };
+                }
+                return {
+                  kind: "opponent",
+                  ref: createRef<HTMLDivElement>(),
+                  seatId,
+                };
+              },
+            );
+
+            setOpponentDrawCards(cardRefs.map(({ ref }) => ref));
+
+            for (const { kind, seatId, ref, index } of cardRefs) {
+              discardSE();
+
+              const setCardCount = () => {
+                setGameState((prev) => {
+                  return {
+                    ...prev,
+                    players: prev?.players?.map((player) => {
+                      if (player.seatId === seatId) {
+                        return {
+                          ...player,
+                          cardCount: player.cardCount + 1,
+                        };
+                      } else {
+                        return player;
+                      }
+                    }),
+                  } as GameState; //TODO 対処
+                });
+              };
+
+              if (kind === "hero") {
+                const drawnCard = newGameState.myCards[index];
+                setDummyCard(drawnCard);
+                drawMyCardAnimation({
+                  dummyCardRef,
+                }).then(() => {
+                  setCardCount();
+                });
+                setDummyCard(undefined);
+                setGameState((prev) => {
+                  return {
+                    ...prev,
+                    myCards: prev.myCards?.concat(drawnCard) ?? [],
+                  } as GameState; //TODO 対処
+                });
+              }
+
+              drawOpponentCardAnimation({
+                opponentDrawCardRef: ref,
+                drawnPlayerAreaRef: playerCardRefs[seatId],
+              }).then(() => {
+                setCardCount();
+              });
+
+              await sleep(100);
+            }
+
+            setOpponentDrawCards([]);
+
+            await sleep(1000);
+
+            setGameState((prev) => {
+              return {
+                kind: "in-game",
+                players: prev?.players ?? [],
+                deckSize: 112,
+                topCard: newGameState.topCard,
+                isClockwise: newGameState.isClockwise,
+                currentSeatId: newGameState.currentSeatId,
+                drawStack: 0,
+                mySeatId: newGameState.mySeatId,
+                myCards: newGameState.myCards,
+                canDraw: newGameState.canDraw,
+                canPass: newGameState.canPass,
+              };
+            });
+            setGameState(newGameState);
+          },
+        )
         .exhaustive();
 
       setCanPointerEvent(true);
     };
   }, [
     discardSE,
+    gameState?.canGameStart,
     gameState?.myCards,
     myCardRefs,
     opponentCard,

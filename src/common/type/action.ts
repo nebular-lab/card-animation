@@ -31,11 +31,16 @@ export const drawStackActionSchema = z.object({
   count: z.number(),
 });
 
+export const startActionSchema = z.object({
+  kind: z.literal("start"),
+});
+
 export const actionSchema = z.union([
   discardActionSchema,
   passActionSchema,
   drawActionSchema,
   drawStackActionSchema,
+  startActionSchema,
 ]);
 
 export type Action = z.infer<typeof actionSchema>;

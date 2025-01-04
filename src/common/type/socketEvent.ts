@@ -13,22 +13,14 @@ export type ActionEvent = z.infer<typeof actionEventSchema>;
 
 export const initGameEventSchema = z.object({
   kind: z.literal("init-game"),
-  gameState: notStartedGameStateSchema,
+  gameState: z.union([inGameStateSchema, notStartedGameStateSchema]),
 });
-
-export const startGameSchema = z.object({
-  kind: z.literal("start-game"),
-  gameState: inGameStateSchema,
-});
-
-export type StartGameEvent = z.infer<typeof startGameSchema>;
 
 export type InitGameEvent = z.infer<typeof initGameEventSchema>;
 
 export const socketEventSchema = z.union([
   actionEventSchema,
   initGameEventSchema,
-  startGameSchema,
 ]);
 
 export type SocketEvent = z.infer<typeof socketEventSchema>;

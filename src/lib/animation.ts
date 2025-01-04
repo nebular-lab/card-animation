@@ -228,6 +228,12 @@ export const drawOpponentCardAnimation = async (
     { x, y },
     { duration: 0.4, ease: "easeInOut" },
   );
+
+  await animate(
+    opponentDrawCardRef.current,
+    { opacity: 0 },
+    { duration: 0.1, ease: "easeInOut" },
+  );
 };
 
 type FloatingTextAnimationInput = {

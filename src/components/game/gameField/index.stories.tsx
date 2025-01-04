@@ -10,6 +10,7 @@ import { wsSend } from "@/lib/websocket";
 
 import {
   initialGameState,
+  notStartedGameState,
   updatedGameState,
   updatedGameState2,
   updatedGameState3,
@@ -43,7 +44,7 @@ export const AllAction: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: initialGameState,
           });
           connection.client.addEventListener("message", (event) => {
@@ -128,7 +129,7 @@ export const HeroDiscardCard: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: initialGameState,
           });
           connection.client.addEventListener("message", (event) => {
@@ -165,7 +166,7 @@ export const EnemyDiscardCard: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: updatedGameState,
           });
           await sleep(2000);
@@ -195,7 +196,7 @@ export const HeroDraw: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: updatedGameState2,
           });
           connection.client.addEventListener("message", (event) => {
@@ -232,7 +233,7 @@ export const EnemyDraw: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: updatedGameState4,
           });
 
@@ -258,7 +259,7 @@ export const HeroPass: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: updatedGameState3,
           });
           connection.client.addEventListener("message", (event) => {
@@ -295,7 +296,7 @@ export const EnemyPass: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: updatedGameState5,
           });
 
@@ -321,7 +322,7 @@ export const EnemyDrawStack: Story = {
       handlers: [
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
-            kind: "start-game",
+            kind: "init-game",
             gameState: initialGameState,
           });
           connection.client.addEventListener("message", (event) => {
@@ -350,6 +351,43 @@ export const EnemyDrawStack: Story = {
                     count: 2,
                   },
                   gameState: updatedGameState8,
+                });
+              })
+              .otherwise(() => {
+                console.error("unexpected action");
+                return;
+              });
+          });
+        }),
+      ],
+    },
+  },
+};
+
+export const StartGame: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "init-game",
+            gameState: notStartedGameState,
+          });
+          connection.client.addEventListener("message", (event) => {
+            const parsedData = receivedActionSchema.safeParse(
+              JSON.parse(event.data.toString()),
+            );
+            if (!parsedData.success) {
+              console.error(parsedData.error);
+              return;
+            }
+            match(parsedData.data)
+              .with({ action: { kind: "start" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: initialGameState,
                 });
               })
               .otherwise(() => {

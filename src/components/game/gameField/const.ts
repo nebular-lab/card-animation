@@ -1,6 +1,10 @@
 import { cardRelation } from "@/common/const";
 import { Card, PlayerCard } from "@/common/type/card";
-import { InGameState } from "@/common/type/game";
+import {
+  InGameState,
+  NotInitializedGameState,
+  NotStartedGameState,
+} from "@/common/type/game";
 import { Player } from "@/common/type/player";
 
 const players: Player[] = [
@@ -297,4 +301,25 @@ export const updatedGameState8: InGameState = {
   myCards: myCards.filter((card) => card.id !== 83),
   canDraw: false,
   canPass: false,
+};
+
+const notStartedPlayers: Player[] = [
+  { seatId: 1, name: "player1", cardCount: 0, id: "1" },
+  { seatId: 2, name: "player2", cardCount: 0, id: "2" },
+  { seatId: 3, name: "player3", cardCount: 0, id: "3" },
+  { seatId: 4, name: "player4", cardCount: 0, id: "4" },
+  { seatId: 5, name: "player5", cardCount: 0, id: "5" },
+  { seatId: 6, name: "player6", cardCount: 0, id: "6" },
+];
+
+export const notStartedGameState: NotStartedGameState = {
+  kind: "not-started",
+  players: notStartedPlayers,
+  deckSize: 112,
+  mySeatId: 1,
+  canGameStart: true,
+};
+
+export const notInitializedGameState: NotInitializedGameState = {
+  kind: "not-initialized",
 };
