@@ -254,7 +254,7 @@ export const floatingTextAnimation = async (
     return;
   }
   setFloatingText((prev) => ({ ...prev, [seatId]: text }));
-  
+
   if (SE) SE();
 
   // 1秒間表示してから、0.5秒かけて消すアニメーション
