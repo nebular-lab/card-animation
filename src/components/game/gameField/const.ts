@@ -52,7 +52,7 @@ const myCards: PlayerCard[] = [
 export const initialGameState: InGameState = {
   kind: "in-game",
   players: players,
-  deckSize: 112,
+  deckSize: 70,
   topCard,
   isClockwise: true,
   currentSeatId: 1,
@@ -75,7 +75,7 @@ export const updatedGameState: InGameState = {
     }
     return player;
   }),
-  deckSize: 112,
+  deckSize: 70,
   topCard: cardRelation[1],
   isClockwise: true,
   currentSeatId: 2,
@@ -104,7 +104,7 @@ export const updatedGameState2: InGameState = {
     }
     return player;
   }),
-  deckSize: 112,
+  deckSize: 70,
   topCard: cardRelation[81],
   isClockwise: false,
   currentSeatId: 1,
@@ -127,7 +127,7 @@ export const updatedGameState3: InGameState = {
     }
     return player;
   }),
-  deckSize: 111,
+  deckSize: 69,
   topCard: cardRelation[81],
   isClockwise: false,
   currentSeatId: 1,
@@ -155,7 +155,7 @@ export const updatedGameState4: InGameState = {
     }
     return player;
   }),
-  deckSize: 111,
+  deckSize: 69,
   topCard: {
     id: 1,
     kind: "SkipCard",
@@ -194,7 +194,7 @@ export const updatedGameState5: InGameState = {
     }
     return player;
   }),
-  deckSize: 111,
+  deckSize: 69,
   topCard: {
     id: 1,
     kind: "SkipCard",
@@ -233,7 +233,7 @@ export const updatedGameState6: InGameState = {
     }
     return player;
   }),
-  deckSize: 111,
+  deckSize: 69,
   topCard: {
     id: 1,
     kind: "SkipCard",
@@ -266,7 +266,7 @@ export const updatedGameState7: InGameState = {
     }
     return player;
   }),
-  deckSize: 112,
+  deckSize: 70,
   topCard: cardRelation[23],
   isClockwise: true,
   currentSeatId: 2,
@@ -295,7 +295,7 @@ export const updatedGameState8: InGameState = {
     }
     return player;
   }),
-  deckSize: 110,
+  deckSize: 68,
   topCard: cardRelation[83],
   isClockwise: true,
   currentSeatId: 3,
@@ -333,8 +333,8 @@ export const notInitializedGameState: NotInitializedGameState = {
 export const gameState9: InGameState = {
   kind: "in-game",
   players: players,
-  deckSize: 112,
-  topCard: cardRelation[83],
+  deckSize: 70,
+  topCard: cardRelation[73],
   isClockwise: true,
   currentSeatId: 1,
   drawStack: 2,
@@ -347,9 +347,18 @@ export const gameState9: InGameState = {
 
 export const gameState10: InGameState = {
   kind: "in-game",
-  players: players,
-  deckSize: 110,
-  topCard: cardRelation[83],
+  players: players.map((player) => {
+    if (player.seatId === 1) {
+      return {
+        ...player,
+        cardCount: 9,
+      };
+    } else {
+      return player;
+    }
+  }),
+  deckSize: 68,
+  topCard: cardRelation[73],
   isClockwise: true,
   currentSeatId: 2,
   drawStack: 0,

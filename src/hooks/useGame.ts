@@ -220,7 +220,7 @@ export const useGame = ({ socketRef }: Input) => {
                   opponentDrawCardRef: cardRef,
                   drawnPlayerAreaRef: playerCardRefs[action.seatId],
                 }).then(() => {
-                  const drawnCard = newGameState.myCards[index];
+                  const drawnCard = drawCards[index];
                   setDummyCard(drawnCard);
                   drawMyCardAnimation({
                     dummyCardRef,
@@ -276,7 +276,7 @@ export const useGame = ({ socketRef }: Input) => {
                 fromSeatId: action.seatId,
                 toSeatId: newGameState.currentSeatId,
               });
-              setGameState(gameState);
+              setGameState(newGameState);
             }
           },
         )
