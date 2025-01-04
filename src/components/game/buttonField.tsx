@@ -49,7 +49,7 @@ export const ButtonField = ({
     });
   };
   return (
-    <div className="absolute bottom-10 right-20 m-auto flex flex-col justify-center gap-1">
+    <div className="absolute bottom-10 right-10 m-auto flex flex-col justify-center gap-1">
       {canPass && (
         <motion.div whileHover={{ scale: 1.1 }} layout>
           <Button onClick={passAction} variant="game" size="lg">

@@ -20,47 +20,16 @@ const cardVariants = cva(
       size: {
         md: "w-14 h-20",
       },
-      hover: {
-        true: "",
-      },
     },
-    compoundVariants: [
-      {
-        hover: true,
-        bgColor: "red",
-        className: "hover:bg-uno-red/90",
-      },
-      {
-        hover: true,
-        bgColor: "blue",
-        className: "hover:bg-uno-blue/90",
-      },
-      {
-        hover: true,
-        bgColor: "green",
-        className: "hover:bg-uno-green/90",
-      },
-      {
-        hover: true,
-        bgColor: "yellow",
-        className: "hover:bg-uno-yellow/90",
-      },
-      {
-        hover: true,
-        bgColor: "black",
-        className: "hover:bg-uno-black/90",
-      },
-    ],
   },
 );
 
 type Props = {
   cardVariant: CardType | HiddenCard;
   size?: "md";
-  hover?: boolean;
 };
 
-export const Card: FC<Props> = ({ cardVariant, size = "md", hover }) => {
+export const Card: FC<Props> = ({ cardVariant, size = "md" }) => {
   const bgColor: "blue" | "green" | "red" | "yellow" | "black" = match(
     cardVariant,
   )
@@ -74,7 +43,7 @@ export const Card: FC<Props> = ({ cardVariant, size = "md", hover }) => {
     .with({ kind: "HiddenCard" }, () => "black" as const)
     .exhaustive();
   return (
-    <div className={cn(cardVariants({ bgColor, size, hover }))}>
+    <div className={cn(cardVariants({ bgColor, size }))}>
       <CardContent cardVariant={cardVariant} />
     </div>
   );

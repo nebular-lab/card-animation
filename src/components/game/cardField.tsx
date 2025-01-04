@@ -1,3 +1,4 @@
+import { cva } from "class-variance-authority";
 import { AnimatePresence, motion } from "motion/react";
 import { Dispatch, FC, RefObject, SetStateAction } from "react";
 
@@ -7,6 +8,15 @@ import { MyCardRef } from "@/hooks/useGame";
 import { action } from "@/lib/action";
 
 import { Card } from "./card";
+
+const variants = cva("", {
+  variants: {
+    canDiscard: {
+      true: "",
+      false: "cursor-not-allowed",
+    },
+  },
+});
 
 type Props = {
   cards: PlayerCard[] | undefined;
@@ -28,7 +38,7 @@ export const CardField: FC<Props> = ({
   setCanPointerEvent,
 }) => {
   return (
-    <div className="absolute inset-x-0 bottom-10 m-auto flex justify-center gap-1">
+    <div className="absolute inset-0 top-[420px] m-auto flex size-fit max-w-[630px] flex-wrap justify-center">
       <AnimatePresence>
         {cards?.map((card) => {
           const discard = () => {
@@ -49,10 +59,10 @@ export const CardField: FC<Props> = ({
               ref={cardRefs.find((cardRef) => cardRef.id === card.id)?.ref}
               whileHover={{ scale: 1.1 }}
               onClick={card.canDiscard ? discard : undefined}
-              className={card.canDiscard ? "" : "cursor-not-allowed"}
+              className={variants({ canDiscard: card.canDiscard })}
               layout
             >
-              <Card cardVariant={card} size="md" hover />
+              <Card cardVariant={card} size="md" />
             </motion.div>
           );
         })}
@@ -63,7 +73,7 @@ export const CardField: FC<Props> = ({
           className={dummyCard ? "" : "opacity-0"}
           layout
         >
-          {dummyCard && <Card cardVariant={dummyCard} size="md" hover />}
+          {dummyCard && <Card cardVariant={dummyCard} size="md" />}
         </motion.div>
       </AnimatePresence>
     </div>
