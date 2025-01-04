@@ -32,7 +32,7 @@ export const notStartedGameStateSchema = z.object({
   drawStack: z.undefined(),
 
   mySeatId: seatIdSchema,
-  myCards: z.undefined(),
+  myCards: z.array(playerCardSchema),
   canDraw: z.undefined(),
   canPass: z.undefined(),
   canGameStart: z.boolean(),
@@ -50,7 +50,7 @@ export const NotInitializedGameState = z.object({
   drawStack: z.undefined(),
 
   mySeatId: z.undefined(),
-  myCards: z.undefined(),
+  myCards: z.array(playerCardSchema),
   canDraw: z.undefined(),
   canPass: z.undefined(),
   canGameStart: z.undefined(),

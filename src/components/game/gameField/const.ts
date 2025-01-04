@@ -316,10 +316,12 @@ export const notStartedGameState: NotStartedGameState = {
   kind: "not-started",
   players: notStartedPlayers,
   deckSize: 112,
+  myCards: [],
   mySeatId: 1,
   canGameStart: true,
 };
 
 export const notInitializedGameState: NotInitializedGameState = {
   kind: "not-initialized",
+  myCards: [],
 };

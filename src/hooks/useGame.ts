@@ -153,6 +153,7 @@ export const useGame = ({ socketRef }: Input) => {
         .with(
           { kind: "action", action: { kind: "pass" } },
           async ({ action, gameState }) => {
+            console.log(playerFloatingTextRefs);
             await floatingTextAnimation({
               text: "PASS",
               ref: playerFloatingTextRefs[action.seatId],
@@ -241,6 +242,7 @@ export const useGame = ({ socketRef }: Input) => {
                 ...player,
                 cardCount: 0,
               })),
+              myCards: [],
               deckSize: 112,
               mySeatId: newGameState.mySeatId,
               canGameStart: !!gameState?.canGameStart,
@@ -271,7 +273,7 @@ export const useGame = ({ socketRef }: Input) => {
                   return {
                     kind: "hero",
                     ref: createRef<HTMLDivElement>(),
-                    index: index / newGameState.players.length - 1,
+                    index: index / newGameState.players.length,
                     seatId,
                   };
                 }
@@ -284,6 +286,8 @@ export const useGame = ({ socketRef }: Input) => {
             );
 
             setOpponentDrawCards(cardRefs.map(({ ref }) => ref));
+
+            await sleep(200);
 
             for (const { kind, seatId, ref, index } of cardRefs) {
               discardSE();
@@ -335,23 +339,9 @@ export const useGame = ({ socketRef }: Input) => {
 
             setOpponentDrawCards([]);
 
-            await sleep(1000);
+            await sleep(1500);
 
-            setGameState((prev) => {
-              return {
-                kind: "in-game",
-                players: prev?.players ?? [],
-                deckSize: 112,
-                topCard: newGameState.topCard,
-                isClockwise: newGameState.isClockwise,
-                currentSeatId: newGameState.currentSeatId,
-                drawStack: 0,
-                mySeatId: newGameState.mySeatId,
-                myCards: newGameState.myCards,
-                canDraw: newGameState.canDraw,
-                canPass: newGameState.canPass,
-              };
-            });
+            discardSE();
             setGameState(newGameState);
           },
         )

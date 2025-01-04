@@ -27,14 +27,10 @@ export const CardField: FC<Props> = ({
   dummyCardRef,
   setCanPointerEvent,
 }) => {
-  if (!cards) {
-    return null;
-  }
-
   return (
     <div className="absolute inset-x-0 bottom-10 m-auto flex justify-center gap-1">
       <AnimatePresence>
-        {cards.map((card) => {
+        {cards?.map((card) => {
           const discard = () => {
             action({
               action: {

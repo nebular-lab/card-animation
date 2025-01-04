@@ -42,7 +42,7 @@ export const PlayerAreaField: React.FC<Props> = ({
   return (
     <>
       {seatIds.map((seatId) => {
-        const player = gameState.players.find(
+        const player = gameState?.players?.find(
           (player) => player.seatId === seatId,
         );
         const isTurn = seatId === gameState.currentSeatId;

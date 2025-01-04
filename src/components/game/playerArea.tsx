@@ -46,9 +46,11 @@ export const PlayerArea = ({
         >
           {player?.cardCount ?? "-"}
           <div ref={playerCardRef} className="absolute inset-0">
-            {opponentCard?.card && (
-              <Card cardVariant={opponentCard.card} size="md" />
-            )}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+              {opponentCard?.card && (
+                <Card cardVariant={opponentCard.card} size="md" />
+              )}
+            </div>
           </div>
         </div>
 
@@ -58,9 +60,8 @@ export const PlayerArea = ({
           {player?.name ?? "-"}
         </div>
       </div>
-      {floatingText && (
-        <FloatingText ref={playerFloatingTextRef} text={floatingText} />
-      )}
+
+      <FloatingText ref={playerFloatingTextRef} text={floatingText} />
     </div>
   );
 };
