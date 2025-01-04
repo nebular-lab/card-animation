@@ -1,6 +1,6 @@
 import { RefObject } from "react";
 
-import { Card } from "../card";
+import { Card } from "./card";
 
 type Props = {
   opponentDrawCards: RefObject<HTMLDivElement | null>[];

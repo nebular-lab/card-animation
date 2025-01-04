@@ -9,11 +9,10 @@ import { CardField } from "../cardField";
 import { Deck } from "../deck";
 import { Direction } from "../direction";
 import { DrawStack } from "../drawStack";
+import { OpponentDrawCard } from "../opponentDrawCard";
 import { PlayerAreaField } from "../playerField";
 import { TableBorder } from "../tableBorder";
 import TopCard from "../topCard";
-
-import { OpponentDrawCard } from "./opponentDrawCard";
 
 export const GameField = () => {
   const { socketRef } = useSocket();

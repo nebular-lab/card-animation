@@ -16,12 +16,7 @@ const players: Player[] = [
   { seatId: 6, name: "player6", cardCount: 7, id: "6" },
 ];
 
-const topCard: Card = {
-  id: 8,
-  kind: "NumberCard",
-  color: "red",
-  number: 8,
-};
+const topCard: Card = cardRelation[3];
 
 const myCards: PlayerCard[] = [
   {
@@ -30,7 +25,7 @@ const myCards: PlayerCard[] = [
   },
   {
     ...cardRelation[23],
-    canDiscard: false,
+    canDiscard: true,
   },
   {
     ...cardRelation[30],
@@ -41,12 +36,12 @@ const myCards: PlayerCard[] = [
     canDiscard: true,
   },
   {
-    ...cardRelation[102],
-    canDiscard: false,
+    ...cardRelation[100],
+    canDiscard: true,
   },
   {
-    ...cardRelation[104],
-    canDiscard: false,
+    ...cardRelation[102],
+    canDiscard: true,
   },
   {
     ...cardRelation[110],
@@ -272,12 +267,12 @@ export const updatedGameState7: InGameState = {
     return player;
   }),
   deckSize: 112,
-  topCard: cardRelation[83],
+  topCard: cardRelation[23],
   isClockwise: true,
   currentSeatId: 2,
   drawStack: 2,
   mySeatId: 1,
-  myCards: myCards.filter((card) => card.id !== 83),
+  myCards: myCards.filter((card) => card.id !== 23),
   canDraw: false,
   canPass: false,
   canDrawStack: false,
