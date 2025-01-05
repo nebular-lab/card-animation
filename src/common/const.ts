@@ -1,3 +1,5 @@
+import { match } from "ts-pattern";
+
 import { Card, CardId } from "./type/card";
 import { SeatId } from "./type/seat";
 
@@ -148,3 +150,15 @@ export const cardRelation: Record<CardId, Card> = cards.reduce(
   },
   {} as Record<CardId, Card>,
 );
+
+export const pointCalculator = (card: Card) => {
+  return match(card)
+    .with({ kind: "NumberCard" }, (v) => v.number)
+    .with({ kind: "ReverseCard" }, () => 20)
+    .with({ kind: "SkipCard" }, () => 20)
+    .with({ kind: "DrawTwoCard" }, () => 20)
+    .with({ kind: "ForceWildCard" }, () => 10)
+    .with({ kind: "WildCard" }, () => 30)
+    .with({ kind: "WildDrawFourCard" }, () => 50)
+    .exhaustive();
+};

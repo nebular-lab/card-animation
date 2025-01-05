@@ -1,6 +1,6 @@
 import { match } from "ts-pattern";
 
-import { seatIds } from "@/common/const";
+import { pointCalculator, seatIds } from "@/common/const";
 import { useGame } from "@/hooks/useGame";
 import { useSocket } from "@/hooks/useSocket";
 
@@ -11,6 +11,7 @@ import { Direction } from "../direction";
 import { DrawStack } from "../drawStack";
 import { OpponentDrawCard } from "../opponentDrawCard";
 import { PlayerAreaField } from "../playerField";
+import { Point } from "../point";
 import { TableBorder } from "../tableBorder";
 import TopCard from "../topCard";
 
@@ -70,6 +71,12 @@ export const GameField = () => {
               dummyCard={dummyCard}
               dummyCardRef={dummyCardRef}
               setCanPointerEvent={setCanPointerEvent}
+            />
+            <Point
+              point={g.myCards.reduce(
+                (acc, card) => acc + pointCalculator(card),
+                0,
+              )}
             />
             <ButtonField
               canDraw={g.canDraw}
