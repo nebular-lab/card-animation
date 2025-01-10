@@ -4,16 +4,16 @@ import { pointCalculator, seatIds } from "@/common/const";
 import { useGame } from "@/hooks/useGame";
 import { useSocket } from "@/hooks/useSocket";
 
-import { ButtonField } from "../buttonField";
-import { CardField } from "../cardField";
-import { Deck } from "../deck";
-import { Direction } from "../direction";
-import { DrawStack } from "../drawStack";
-import { OpponentDrawCard } from "../opponentDrawCard";
-import { PlayerAreaField } from "../playerField";
-import { Point } from "../point";
-import { TableBorder } from "../tableBorder";
-import TopCard from "../topCard";
+import { ButtonField } from "./buttonField";
+import { CardField } from "./cardField";
+import { Deck } from "./deck";
+import { Direction } from "./direction";
+import { DrawStack } from "./drawStack";
+import { OpponentDrawCard } from "./opponentDrawCard";
+import { PlayerAreaField } from "./playerField";
+import { Point } from "./point";
+import { TableBorder } from "./tableBorder";
+import TopCard from "./topCard";
 
 export const GameField = () => {
   const { socketRef } = useSocket();

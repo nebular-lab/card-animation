@@ -9,10 +9,9 @@ import {
 import { match } from "ts-pattern";
 
 import { Card, PlayerCard } from "@/common/type/card";
-import { GameState } from "@/common/type/game";
+import { GameState, NotInitializedGameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
 import { socketEventSchema } from "@/common/type/socketEvent";
-import { notInitializedGameState } from "@/components/game/gameField/const";
 import {
   discardMyCardAnimation,
   discardOpponentCardAnimation,
@@ -38,6 +37,11 @@ export type MyCardRef = {
 export type OpponentCard = {
   seatId: SeatId;
   card: Card;
+};
+
+export const notInitializedGameState: NotInitializedGameState = {
+  kind: "not-initialized",
+  myCards: [],
 };
 
 type Input = {

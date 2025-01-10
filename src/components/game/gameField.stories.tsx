@@ -8,25 +8,22 @@ import { actionSchema } from "@/common/type/action";
 import { sleep } from "@/lib/utils";
 import { wsSend } from "@/lib/websocket";
 
+import { GameField } from "./gameField";
+import { enemyDiscardState1, enemyDiscardState2 } from "./mock/enemyDiscard";
+import { enemyDrawState1, enemyDrawState2 } from "./mock/enemyDraw";
 import {
-  gameState10,
-  gameState11,
-  gameState12,
-  gameState13,
-  gameState9,
-  initialGameState,
-  notStartedGameState,
-  updatedGameState,
-  updatedGameState2,
-  updatedGameState3,
-  updatedGameState4,
-  updatedGameState5,
-  updatedGameState6,
-  updatedGameState7,
-  updatedGameState8,
-} from "./const";
-
-import { GameField } from ".";
+  enemyDrawStackState1,
+  enemyDrawStackState2,
+  enemyDrawStackState3,
+} from "./mock/enemyDrawStack";
+import { enemyPassState1, enemyPassState2 } from "./mock/enemyPass";
+import { enemyUnoState1, enemyUnoState2 } from "./mock/enemyUno";
+import { heroDiscardState1, heroDiscardState2 } from "./mock/heroDiscard";
+import { heroDrawState1, heroDrawState2 } from "./mock/heroDraw";
+import { heroDrawStackState1, heroDrawStackState2 } from "./mock/heroDrawStack";
+import { heroPassState1, heroPassState2 } from "./mock/heroPass";
+import { heroUnoGameState1, heroUnoGameState2 } from "./mock/heroUno";
+import { startGameState1, startGameState2 } from "./mock/startGame";
 
 const receivedActionSchema = z.object({
   action: actionSchema,
@@ -50,7 +47,7 @@ export const HeroDiscardCard: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: initialGameState,
+            gameState: heroDiscardState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -65,7 +62,7 @@ export const HeroDiscardCard: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: updatedGameState,
+                  gameState: heroDiscardState2,
                 });
               })
               .otherwise(() => {
@@ -87,7 +84,7 @@ export const EnemyDiscardCard: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: updatedGameState,
+            gameState: enemyDiscardState1,
           });
           await sleep(2000);
           await wsSend(connection, {
@@ -102,7 +99,7 @@ export const EnemyDiscardCard: Story = {
               },
               isUNO: false,
             },
-            gameState: updatedGameState2,
+            gameState: enemyDiscardState2,
           });
         }),
       ],
@@ -118,7 +115,7 @@ export const HeroDraw: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: updatedGameState2,
+            gameState: heroDrawState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -133,7 +130,7 @@ export const HeroDraw: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: updatedGameState3,
+                  gameState: heroDrawState2,
                 });
               })
               .otherwise(() => {
@@ -155,7 +152,7 @@ export const EnemyDraw: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: updatedGameState4,
+            gameState: enemyDrawState1,
           });
 
           await sleep(2000);
@@ -165,7 +162,7 @@ export const EnemyDraw: Story = {
               kind: "draw",
               seatId: 6,
             },
-            gameState: updatedGameState5,
+            gameState: enemyDrawState2,
           });
         }),
       ],
@@ -181,7 +178,7 @@ export const HeroPass: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: updatedGameState3,
+            gameState: heroPassState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -196,7 +193,7 @@ export const HeroPass: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: updatedGameState4,
+                  gameState: heroPassState2,
                 });
               })
               .otherwise(() => {
@@ -218,7 +215,7 @@ export const EnemyPass: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: updatedGameState5,
+            gameState: enemyPassState1,
           });
 
           await sleep(2000);
@@ -228,7 +225,7 @@ export const EnemyPass: Story = {
               kind: "pass",
               seatId: 6,
             },
-            gameState: updatedGameState6,
+            gameState: enemyPassState2,
           });
         }),
       ],
@@ -244,7 +241,7 @@ export const HeroDrawStack: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: gameState9,
+            gameState: heroDrawStackState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -259,7 +256,7 @@ export const HeroDrawStack: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: gameState10,
+                  gameState: heroDrawStackState2,
                 });
               })
               .otherwise(() => {
@@ -281,7 +278,7 @@ export const EnemyDrawStack: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: initialGameState,
+            gameState: enemyDrawStackState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -296,7 +293,7 @@ export const EnemyDrawStack: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: updatedGameState7,
+                  gameState: enemyDrawStackState2,
                 });
 
                 await sleep(4000);
@@ -308,7 +305,7 @@ export const EnemyDrawStack: Story = {
                     seatId: 2,
                     count: 2,
                   },
-                  gameState: updatedGameState8,
+                  gameState: enemyDrawStackState3,
                 });
               })
               .otherwise(() => {
@@ -330,7 +327,7 @@ export const StartGame: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: notStartedGameState,
+            gameState: startGameState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -345,7 +342,7 @@ export const StartGame: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: initialGameState,
+                  gameState: startGameState2,
                 });
               })
               .otherwise(() => {
@@ -367,7 +364,7 @@ export const HeroUno: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: gameState11,
+            gameState: heroUnoGameState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -382,7 +379,7 @@ export const HeroUno: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: gameState12,
+                  gameState: heroUnoGameState2,
                 });
               })
               .otherwise(() => {
@@ -404,7 +401,7 @@ export const EnemyUno: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: gameState12,
+            gameState: enemyUnoState1,
           });
 
           await sleep(2000);
@@ -418,7 +415,7 @@ export const EnemyUno: Story = {
               },
               isUNO: true,
             },
-            gameState: gameState13,
+            gameState: enemyUnoState2,
           });
         }),
       ],
