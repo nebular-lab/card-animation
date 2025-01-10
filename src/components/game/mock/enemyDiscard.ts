@@ -90,7 +90,7 @@ export const enemyDiscardState2: InGameState = {
   drawStack: 0,
   mySeatId: 1,
   myCards: myCards.filter((card) => card.id !== 1),
-  canDraw: true,
+  canDraw: false,
   canPass: false,
   canDrawStack: false,
 };

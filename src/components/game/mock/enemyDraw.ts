@@ -15,7 +15,7 @@ const players: Player[] = [
 const myCards: PlayerCard[] = [
   {
     ...cardRelation[1],
-    canDiscard: true,
+    canDiscard: false,
   },
   {
     ...cardRelation[23],
@@ -68,7 +68,7 @@ export const enemyDrawState1: InGameState = {
     .filter((card) => card.id !== 1)
     .concat({
       ...cardRelation[10],
-      canDiscard: true,
+      canDiscard: false,
     })
     .sort((a, b) => a.id - b.id),
   canDraw: false,

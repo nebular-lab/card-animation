@@ -17,11 +17,11 @@ const topCard: Card = cardRelation[3];
 const myCards: PlayerCard[] = [
   {
     ...cardRelation[1],
-    canDiscard: true,
+    canDiscard: false,
   },
   {
     ...cardRelation[23],
-    canDiscard: false,
+    canDiscard: true,
   },
   {
     ...cardRelation[30],

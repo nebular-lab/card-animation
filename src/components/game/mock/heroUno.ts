@@ -41,10 +41,10 @@ export const heroUnoGameState1: InGameState = {
     },
     {
       ...cardRelation[109],
-      canDiscard: true,
+      canDiscard: false,
     },
   ],
-  canDraw: true,
+  canDraw: false,
   canPass: false,
   canDrawStack: false,
 };
@@ -75,7 +75,7 @@ export const heroUnoGameState2: InGameState = {
   myCards: [
     {
       ...cardRelation[109],
-      canDiscard: true,
+      canDiscard: false,
     },
   ],
   canDraw: false,

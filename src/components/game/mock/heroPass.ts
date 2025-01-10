@@ -66,7 +66,7 @@ export const heroPassState1: InGameState = {
     .filter((card) => card.id !== 1)
     .concat({
       ...cardRelation[10],
-      canDiscard: true,
+      canDiscard: false,
     }),
   canDraw: false,
   canPass: true,
@@ -98,7 +98,7 @@ export const heroPassState2: InGameState = {
     .filter((card) => card.id !== 1)
     .concat({
       ...cardRelation[10],
-      canDiscard: true,
+      canDiscard: false,
     })
     .sort((a, b) => a.id - b.id),
   canDraw: false,

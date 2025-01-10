@@ -12,12 +12,10 @@ const players: Player[] = [
   { seatId: 6, name: "player6", cardCount: 7, id: "6" },
 ];
 
-const topCard: Card = cardRelation[3];
-
 const myCards: PlayerCard[] = [
   {
     ...cardRelation[1],
-    canDiscard: true,
+    canDiscard: false,
   },
   {
     ...cardRelation[23],

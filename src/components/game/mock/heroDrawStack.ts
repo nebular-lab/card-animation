@@ -15,7 +15,7 @@ const players: Player[] = [
 const myCards: PlayerCard[] = [
   {
     ...cardRelation[1],
-    canDiscard: true,
+    canDiscard: false,
   },
   {
     ...cardRelation[23],
@@ -79,11 +79,11 @@ export const heroDrawStackState2: InGameState = {
   myCards: myCards
     .concat({
       ...cardRelation[109],
-      canDiscard: true,
+      canDiscard: false,
     })
     .concat({
       ...cardRelation[3],
-      canDiscard: true,
+      canDiscard: false,
     })
     .sort((a, b) => a.id - b.id),
   canDraw: false,

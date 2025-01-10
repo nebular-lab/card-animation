@@ -37,7 +37,7 @@ export const enemyUnoState1: InGameState = {
   myCards: [
     {
       ...cardRelation[109],
-      canDiscard: true,
+      canDiscard: false,
     },
   ],
   canDraw: false,
@@ -71,7 +71,7 @@ export const enemyUnoState2: InGameState = {
   myCards: [
     {
       ...cardRelation[109],
-      canDiscard: true,
+      canDiscard: false,
     },
   ],
   canDraw: false,
