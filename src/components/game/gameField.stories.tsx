@@ -39,6 +39,43 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
+export const StartGame: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "init-game",
+            gameState: startGameState1,
+          });
+          connection.client.addEventListener("message", (event) => {
+            const parsedData = receivedActionSchema.safeParse(
+              JSON.parse(event.data.toString()),
+            );
+            if (!parsedData.success) {
+              console.error(parsedData.error);
+              return;
+            }
+            match(parsedData.data)
+              .with({ action: { kind: "start" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  gameState: startGameState2,
+                });
+              })
+              .otherwise(() => {
+                console.error("unexpected action");
+                return;
+              });
+          });
+        }),
+      ],
+    },
+  },
+};
+
 export const HeroDiscardCard: Story = {
   parameters: {
     layout: "centered",
@@ -306,43 +343,6 @@ export const EnemyDrawStack: Story = {
                     count: 2,
                   },
                   gameState: enemyDrawStackState3,
-                });
-              })
-              .otherwise(() => {
-                console.error("unexpected action");
-                return;
-              });
-          });
-        }),
-      ],
-    },
-  },
-};
-
-export const StartGame: Story = {
-  parameters: {
-    layout: "centered",
-    msw: {
-      handlers: [
-        server.addEventListener("connection", async (connection) => {
-          await wsSend(connection, {
-            kind: "init-game",
-            gameState: startGameState1,
-          });
-          connection.client.addEventListener("message", (event) => {
-            const parsedData = receivedActionSchema.safeParse(
-              JSON.parse(event.data.toString()),
-            );
-            if (!parsedData.success) {
-              console.error(parsedData.error);
-              return;
-            }
-            match(parsedData.data)
-              .with({ action: { kind: "start" } }, async ({ action }) => {
-                await wsSend(connection, {
-                  kind: "action",
-                  action: action,
-                  gameState: startGameState2,
                 });
               })
               .otherwise(() => {
