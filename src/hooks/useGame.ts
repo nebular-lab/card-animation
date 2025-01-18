@@ -432,6 +432,7 @@ export const useGame = ({ socketRef }: Input) => {
     playerCardRefs,
     playerFloatingTextRefs,
     socketRef,
+    unoSE,
   ]);
 
   return {
