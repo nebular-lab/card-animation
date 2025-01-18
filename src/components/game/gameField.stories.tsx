@@ -47,7 +47,7 @@ export const StartGame: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: startGameState1,
+            updatedGameState: startGameState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -62,7 +62,7 @@ export const StartGame: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: startGameState2,
+                  updatedGameState: startGameState2,
                 });
               })
               .otherwise(() => {
@@ -84,7 +84,7 @@ export const HeroDiscardCard: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: heroDiscardState1,
+            updatedGameState: heroDiscardState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -99,7 +99,7 @@ export const HeroDiscardCard: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: heroDiscardState2,
+                  updatedGameState: heroDiscardState2,
                 });
               })
               .otherwise(() => {
@@ -121,7 +121,7 @@ export const EnemyDiscardCard: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: enemyDiscardState1,
+            updatedGameState: enemyDiscardState1,
           });
           await sleep(2000);
           await wsSend(connection, {
@@ -136,7 +136,7 @@ export const EnemyDiscardCard: Story = {
               },
               isUNO: false,
             },
-            gameState: enemyDiscardState2,
+            updatedGameState: enemyDiscardState2,
           });
         }),
       ],
@@ -152,7 +152,7 @@ export const HeroDraw: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: heroDrawState1,
+            updatedGameState: heroDrawState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -167,7 +167,7 @@ export const HeroDraw: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: heroDrawState2,
+                  updatedGameState: heroDrawState2,
                 });
               })
               .otherwise(() => {
@@ -189,7 +189,7 @@ export const EnemyDraw: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: enemyDrawState1,
+            updatedGameState: enemyDrawState1,
           });
 
           await sleep(2000);
@@ -199,7 +199,7 @@ export const EnemyDraw: Story = {
               kind: "draw",
               seatId: 6,
             },
-            gameState: enemyDrawState2,
+            updatedGameState: enemyDrawState2,
           });
         }),
       ],
@@ -215,7 +215,7 @@ export const HeroPass: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: heroPassState1,
+            updatedGameState: heroPassState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -230,7 +230,7 @@ export const HeroPass: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: heroPassState2,
+                  updatedGameState: heroPassState2,
                 });
               })
               .otherwise(() => {
@@ -252,7 +252,7 @@ export const EnemyPass: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: enemyPassState1,
+            updatedGameState: enemyPassState1,
           });
 
           await sleep(2000);
@@ -262,7 +262,7 @@ export const EnemyPass: Story = {
               kind: "pass",
               seatId: 6,
             },
-            gameState: enemyPassState2,
+            updatedGameState: enemyPassState2,
           });
         }),
       ],
@@ -278,7 +278,7 @@ export const HeroDrawStack: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: heroDrawStackState1,
+            updatedGameState: heroDrawStackState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -293,7 +293,7 @@ export const HeroDrawStack: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: heroDrawStackState2,
+                  updatedGameState: heroDrawStackState2,
                 });
               })
               .otherwise(() => {
@@ -315,7 +315,7 @@ export const EnemyDrawStack: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: enemyDrawStackState1,
+            updatedGameState: enemyDrawStackState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -330,7 +330,7 @@ export const EnemyDrawStack: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: enemyDrawStackState2,
+                  updatedGameState: enemyDrawStackState2,
                 });
 
                 await sleep(4000);
@@ -342,7 +342,7 @@ export const EnemyDrawStack: Story = {
                     seatId: 2,
                     count: 2,
                   },
-                  gameState: enemyDrawStackState3,
+                  updatedGameState: enemyDrawStackState3,
                 });
               })
               .otherwise(() => {
@@ -364,7 +364,7 @@ export const HeroUno: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: heroUnoGameState1,
+            updatedGameState: heroUnoGameState1,
           });
           connection.client.addEventListener("message", (event) => {
             const parsedData = receivedActionSchema.safeParse(
@@ -379,7 +379,7 @@ export const HeroUno: Story = {
                 await wsSend(connection, {
                   kind: "action",
                   action: action,
-                  gameState: heroUnoGameState2,
+                  updatedGameState: heroUnoGameState2,
                 });
               })
               .otherwise(() => {
@@ -401,7 +401,7 @@ export const EnemyUno: Story = {
         server.addEventListener("connection", async (connection) => {
           await wsSend(connection, {
             kind: "init-game",
-            gameState: enemyUnoState1,
+            updatedGameState: enemyUnoState1,
           });
 
           await sleep(2000);
@@ -415,7 +415,7 @@ export const EnemyUno: Story = {
               },
               isUNO: true,
             },
-            gameState: enemyUnoState2,
+            updatedGameState: enemyUnoState2,
           });
         }),
       ],

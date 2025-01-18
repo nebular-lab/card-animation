@@ -121,13 +121,13 @@ export const useGame = ({ socketRef }: Input) => {
       }
 
       await match(parsedEvent.data)
-        .with({ kind: "init-game" }, ({ gameState }) => {
-          setGameState(gameState);
+        .with({ kind: "init-game" }, ({ updatedGameState }) => {
+          setGameState(updatedGameState);
         })
         .with(
           { kind: "action", action: { kind: "discard" } },
-          async ({ action, gameState }) => {
-            if (gameState.mySeatId === action.seatId) {
+          async ({ action, updatedGameState }) => {
+            if (updatedGameState.mySeatId === action.seatId) {
               discardSE();
               if (action.isUNO) {
                 floatingTextAnimation({
@@ -140,13 +140,13 @@ export const useGame = ({ socketRef }: Input) => {
               }
               await discardMyCardAnimation({
                 action,
-                nextActonSeatId: gameState.currentSeatId,
+                nextActonSeatId: updatedGameState.currentSeatId,
                 myCardRefs,
                 tableBorderRef,
                 anotherTableBorderRef,
                 topCardRef,
               });
-              setGameState(gameState);
+              setGameState(updatedGameState);
             } else {
               setOpponentCard({ seatId: action.seatId, card: action.card });
               await sleep(500);
@@ -162,19 +162,19 @@ export const useGame = ({ socketRef }: Input) => {
               }
               await discardOpponentCardAnimation({
                 action,
-                nextActionSeatId: gameState.currentSeatId,
+                nextActionSeatId: updatedGameState.currentSeatId,
                 opponentCardRefs: playerCardRefs,
                 tableBorderRef,
                 anotherTableBorderRef,
                 topCardRef,
               });
-              setGameState(gameState);
+              setGameState(updatedGameState);
             }
           },
         )
         .with(
           { kind: "action", action: { kind: "pass" } },
-          async ({ action, gameState }) => {
+          async ({ action, updatedGameState }) => {
             await floatingTextAnimation({
               text: "PASS",
               ref: playerFloatingTextRefs[action.seatId],
@@ -186,16 +186,16 @@ export const useGame = ({ socketRef }: Input) => {
               tableBorderRef,
               anotherTableBorderRef,
               fromSeatId: action.seatId,
-              toSeatId: gameState.currentSeatId,
+              toSeatId: updatedGameState.currentSeatId,
             });
-            setGameState(gameState);
+            setGameState(updatedGameState);
           },
         )
         .with(
           { kind: "action", action: { kind: "draw" } },
-          async ({ action, gameState: newGameState }) => {
-            if (newGameState.mySeatId === action.seatId) {
-              const drawnCard = newGameState.myCards.find((myCard) =>
+          async ({ action, updatedGameState }) => {
+            if (updatedGameState.mySeatId === action.seatId) {
+              const drawnCard = updatedGameState.myCards.find((myCard) =>
                 gameState?.myCards?.every((card) => card.id !== myCard.id),
               );
               if (!drawnCard) {
@@ -207,9 +207,9 @@ export const useGame = ({ socketRef }: Input) => {
               await drawMyCardAnimation({ dummyCardRef });
               setDummyCard(undefined);
               setGameState({
-                ...newGameState,
+                ...updatedGameState,
                 myCards: gameState?.myCards?.concat(drawnCard) ?? [],
-              });
+              } as GameState);
             } else {
               const cardRef = createRef<HTMLDivElement>();
               setOpponentDrawCards([cardRef]);
@@ -220,18 +220,18 @@ export const useGame = ({ socketRef }: Input) => {
                 drawnPlayerAreaRef: playerCardRefs[action.seatId],
               });
               setOpponentDrawCards([]);
-              setGameState(newGameState);
+              setGameState(updatedGameState);
             }
           },
         )
         .with(
           { kind: "action", action: { kind: "draw-stack" } },
-          async ({ action, gameState: newGameState }) => {
-            if (newGameState.mySeatId === action.seatId) {
+          async ({ action, updatedGameState }) => {
+            if (updatedGameState.mySeatId === action.seatId) {
               const cardRefs = Array.from({ length: action.count }, () =>
                 createRef<HTMLDivElement>(),
               );
-              const drawCards = newGameState.myCards.filter((myCard) =>
+              const drawCards = updatedGameState.myCards.filter((myCard) =>
                 gameState?.myCards?.every((card) => card.id !== myCard.id),
               );
               setOpponentDrawCards(cardRefs);
@@ -248,35 +248,26 @@ export const useGame = ({ socketRef }: Input) => {
                     dummyCardRef,
                   });
                   setDummyCard(undefined);
-                  setGameState((prev) => {
-                    return {
-                      ...prev,
-                      myCards: prev.myCards?.concat(drawnCard) ?? [],
-                    } as GameState; //TODO 対処
-                  });
+                  setGameState((prev) => ({
+                    ...prev,
+                    myCards: prev.myCards?.concat(drawnCard) ?? [],
+                  } as GameState));
 
-                  setGameState((prev) => {
-                    return {
-                      ...prev,
-                      players: prev?.players?.map((player) => {
-                        if (player.seatId === action.seatId) {
-                          return {
-                            ...player,
-                            cardCount: player.cardCount + 1,
-                          };
-                        } else {
-                          return player;
-                        }
-                      }),
-                    } as GameState; //TODO 対処
-                  });
+                  setGameState((prev) => ({
+                    ...prev,
+                    players: prev?.players?.map((player) =>
+                      player.seatId === action.seatId
+                        ? { ...player, cardCount: player.cardCount + 1 }
+                        : player,
+                    ),
+                  } as GameState));
                 });
                 await sleep(1000);
                 index++;
               }
               await sleep(500);
               setOpponentDrawCards([]);
-              setGameState(newGameState);
+              setGameState(updatedGameState);
             } else {
               const cardRefs = Array.from({ length: action.count }, () =>
                 createRef<HTMLDivElement>(),
@@ -296,26 +287,26 @@ export const useGame = ({ socketRef }: Input) => {
                 tableBorderRef,
                 anotherTableBorderRef,
                 fromSeatId: action.seatId,
-                toSeatId: newGameState.currentSeatId,
+                toSeatId: updatedGameState.currentSeatId,
               });
-              setGameState(newGameState);
+              setGameState(updatedGameState);
             }
           },
         )
         .with(
           { kind: "action", action: { kind: "start" } },
-          async ({ gameState: newGameState }) => {
+          async ({ updatedGameState }) => {
             setGameState({
               kind: "not-started",
-              players: newGameState.players.map((player) => ({
+              players: updatedGameState.players.map((player) => ({
                 ...player,
                 cardCount: 0,
               })),
               myCards: [],
               deckSize: 112,
-              mySeatId: newGameState.mySeatId,
+              mySeatId: updatedGameState.mySeatId,
               canGameStart: !!gameState?.canGameStart,
-            });
+            } as GameState);
             await sleep(200);
 
             type CardRef =
@@ -332,17 +323,17 @@ export const useGame = ({ socketRef }: Input) => {
                   index: undefined;
                 };
             const cardRefs: CardRef[] = Array.from(
-              { length: newGameState.players.length * 7 },
+              { length: updatedGameState.players.length * 7 },
               (_, index) => {
                 const seatId =
-                  newGameState.players[index % newGameState.players.length]
+                  updatedGameState.players[index % updatedGameState.players.length]
                     .seatId;
 
-                if (seatId === newGameState.mySeatId) {
+                if (seatId === updatedGameState.mySeatId) {
                   return {
                     kind: "hero",
                     ref: createRef<HTMLDivElement>(),
-                    index: index / newGameState.players.length,
+                    index: index / updatedGameState.players.length,
                     seatId,
                   };
                 }
@@ -361,59 +352,44 @@ export const useGame = ({ socketRef }: Input) => {
             for (const { kind, seatId, ref, index } of cardRefs) {
               discardSE();
 
-              const setCardCount = () => {
-                setGameState((prev) => {
-                  return {
-                    ...prev,
-                    players: prev?.players?.map((player) => {
-                      if (player.seatId === seatId) {
-                        return {
-                          ...player,
-                          cardCount: player.cardCount + 1,
-                        };
-                      } else {
-                        return player;
-                      }
-                    }),
-                  } as GameState; //TODO 対処
-                });
-              };
-
               drawOpponentCardAnimation({
                 opponentDrawCardRef: ref,
                 drawnPlayerAreaRef: playerCardRefs[seatId],
               }).then(() => {
-                if (kind === "hero") {
-                  const drawnCard = newGameState.myCards[index];
+                if (kind === "hero" && typeof index === "number") {
+                  const drawnCard = updatedGameState.myCards[index];
                   setDummyCard(drawnCard);
                   drawMyCardAnimation({
                     dummyCardRef,
                   });
                   setDummyCard(undefined);
-                  setGameState((prev) => {
-                    return {
-                      ...prev,
-                      myCards: prev.myCards?.concat(drawnCard) ?? [],
-                    } as GameState; //TODO 対処
-                  });
+                  setGameState((prev) => ({
+                    ...prev,
+                    myCards: prev.myCards?.concat(drawnCard) ?? [],
+                  } as GameState));
                 }
-                setCardCount();
+                setGameState((prev) => ({
+                  ...prev,
+                  players: prev?.players?.map((player) =>
+                    player.seatId === seatId
+                      ? { ...player, cardCount: player.cardCount + 1 }
+                      : player,
+                  ),
+                } as GameState));
               });
 
               await sleep(100);
             }
 
-            setGameState((prev) => {
-              return {
-                ...prev,
-                deckSize: newGameState.deckSize + 1,
-              } as GameState; //TODO 対処
-            });
+            setGameState((prev) => ({
+              ...prev,
+              deckSize: updatedGameState.deckSize + 1,
+            } as GameState));
 
             await sleep(1500);
 
             discardSE();
-            setGameState(newGameState);
+            setGameState(updatedGameState);
             setOpponentDrawCards([]);
           },
         )

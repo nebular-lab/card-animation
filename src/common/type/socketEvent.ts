@@ -6,14 +6,14 @@ import { inGameStateSchema, notStartedGameStateSchema } from "./game";
 export const actionEventSchema = z.object({
   kind: z.literal("action"),
   action: actionSchema,
-  gameState: inGameStateSchema,
+  updatedGameState: inGameStateSchema,
 });
 
 export type ActionEvent = z.infer<typeof actionEventSchema>;
 
 export const initGameEventSchema = z.object({
   kind: z.literal("init-game"),
-  gameState: z.union([inGameStateSchema, notStartedGameStateSchema]),
+  updatedGameState: z.union([inGameStateSchema, notStartedGameStateSchema]),
 });
 
 export type InitGameEvent = z.infer<typeof initGameEventSchema>;
