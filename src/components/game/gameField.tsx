@@ -14,6 +14,7 @@ import { PlayerAreaField } from "./playerField";
 import { Point } from "./point";
 import { TableBorder } from "./tableBorder";
 import TopCard from "./topCard";
+import { LettersPullUp } from "./LettersPullUp";
 
 export const GameField = () => {
   const { socketRef } = useSocket();
@@ -59,9 +60,10 @@ export const GameField = () => {
               />
               <Direction isClockwise={g.isClockwise} />
 
-              <Deck deckSize={g.deckSize} />
+              {g.kind === "not-started" || <Deck deckSize={g.deckSize} />}
               <DrawStack drawStack={g.drawStack} />
               <OpponentDrawCard opponentDrawCards={opponentDrawCards} />
+              <LettersPullUp.Root />
             </div>
             <CardField
               cards={g.myCards}

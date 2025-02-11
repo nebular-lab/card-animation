@@ -39,43 +39,42 @@ export const CardField: FC<Props> = ({
 }) => {
   return (
     <div className="absolute inset-0 top-[420px] m-auto flex size-fit max-w-[630px] flex-wrap justify-center">
-      <AnimatePresence>
-        {cards?.map((card) => {
-          const discard = () => {
-            action({
-              action: {
-                kind: "discard",
-                card,
-                seatId: mySeatId,
-                isUNO: cards.length === 2,
-              },
-              setCanPointerEvent,
-              webSocket: socketRef.current,
-            });
-          };
-          return (
-            <motion.div
-              key={card.id}
-              ref={cardRefs.find((cardRef) => cardRef.id === card.id)?.ref}
-              whileHover={{ scale: 1.1 }}
-              onClick={card.canDiscard ? discard : undefined}
-              className={variants({ canDiscard: card.canDiscard })}
-              layout
-            >
-              <Card cardVariant={card} size="md" />
-            </motion.div>
-          );
-        })}
+      {cards?.map((card) => {
+        const discard = () => {
+          action({
+            action: {
+              kind: "discard",
+              card,
+              seatId: mySeatId,
+              isUNO: cards.length === 2,
+            },
+            setCanPointerEvent,
+            webSocket: socketRef.current,
+          });
+        };
+        const ref = cardRefs.find((cardRef) => cardRef.id === card.id)?.ref;
+        return (
+          <motion.div
+            key={card.id}
+            ref={ref}
+            whileHover={{ scale: 1.1 }}
+            onClick={card.canDiscard ? discard : undefined}
+            className={variants({ canDiscard: card.canDiscard })}
+            layout
+          >
+            <Card cardVariant={card} size="md" />
+          </motion.div>
+        );
+      })}
 
-        <motion.div
-          ref={dummyCardRef}
-          whileHover={{ scale: 1.1 }}
-          className={dummyCard ? "" : "opacity-0"}
-          layout
-        >
-          {dummyCard && <Card cardVariant={dummyCard} size="md" />}
-        </motion.div>
-      </AnimatePresence>
+      <motion.div
+        ref={dummyCardRef}
+        whileHover={{ scale: 1.1 }}
+        className={dummyCard ? "" : "opacity-0"}
+        layout
+      >
+        {dummyCard && <Card cardVariant={dummyCard} size="md" />}
+      </motion.div>
     </div>
   );
 };

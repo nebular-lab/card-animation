@@ -27,7 +27,7 @@ export const discardMyCardAnimation = async (input: DiscardAnimationInput) => {
   } = input;
 
   const cardRef = myCardRefs.find((card) => card.id === action.card.id)?.ref;
-
+  
   if (!cardRef || !cardRef.current) {
     console.error("card not found");
     return;

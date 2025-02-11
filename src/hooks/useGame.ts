@@ -12,6 +12,7 @@ import { Card, PlayerCard } from "@/common/type/card";
 import { GameState, NotInitializedGameState } from "@/common/type/game";
 import { SeatId } from "@/common/type/seat";
 import { socketEventSchema } from "@/common/type/socketEvent";
+import { LettersPullUp } from "@/components/game/LettersPullUp";
 import {
   discardMyCardAnimation,
   discardOpponentCardAnimation,
@@ -49,7 +50,7 @@ type Input = {
 };
 
 export const useGame = ({ socketRef }: Input) => {
-  const { passSE, discardSE, unoSE } = useSE();
+  const { passSE, discardSE, unoSE, gameSE, startSE } = useSE();
   const [canPointerEvent, setCanPointerEvent] = useState<boolean>(true);
   const [gameState, setGameState] = useState<GameState>(
     notInitializedGameState,
@@ -82,16 +83,30 @@ export const useGame = ({ socketRef }: Input) => {
   const topCardRef = useRef<HTMLDivElement>(null);
   const tableBorderRef = useRef<SVGRectElement>(null);
   const anotherTableBorderRef = useRef<SVGRectElement>(null);
-  const myCardRefs = useMemo(
-    () =>
+
+  const cardRefsMapRef = useRef<Map<number, RefObject<HTMLDivElement | null>>>(
+    new Map(),
+  );
+
+  // myCardRefsの実装を変更
+  const myCardRefs = useMemo(() => {
+    return (
       gameState?.myCards?.map((card) => {
+        // 既存のrefがあればそれを使用し、なければ新しく作成
+        if (!cardRefsMapRef.current.has(card.id)) {
+          cardRefsMapRef.current.set(
+            card.id,
+            createRef<HTMLDivElement | null>(),
+          );
+        }
         return {
           id: card.id,
-          ref: createRef<HTMLDivElement>(),
+          ref: cardRefsMapRef.current.get(card.id)!,
         };
-      }) ?? [],
-    [gameState?.myCards],
-  );
+      }) ?? []
+    );
+  }, [gameState?.myCards]);
+
   const dummyCardRef = useRef<HTMLDivElement>(null);
   const playerCardRefs: Record<
     SeatId,
@@ -129,6 +144,17 @@ export const useGame = ({ socketRef }: Input) => {
           async ({ action, updatedGameState }) => {
             if (updatedGameState.mySeatId === action.seatId) {
               discardSE();
+              setGameState(
+                (prev) =>
+                  ({
+                    ...prev,
+                    players: prev?.players?.map((player) =>
+                      player.seatId === action.seatId
+                        ? { ...player, cardCount: player.cardCount - 1 }
+                        : player,
+                    ),
+                  }) as GameState,
+              );
               if (action.isUNO) {
                 floatingTextAnimation({
                   text: "UNO",
@@ -151,6 +177,19 @@ export const useGame = ({ socketRef }: Input) => {
               setOpponentCard({ seatId: action.seatId, card: action.card });
               await sleep(500);
               discardSE();
+
+              setGameState(
+                (prev) =>
+                  ({
+                    ...prev,
+                    players: prev?.players?.map((player) =>
+                      player.seatId === action.seatId
+                        ? { ...player, cardCount: player.cardCount - 1 }
+                        : player,
+                    ),
+                  }) as GameState,
+              );
+
               if (action.isUNO) {
                 floatingTextAnimation({
                   text: "UNO",
@@ -175,7 +214,7 @@ export const useGame = ({ socketRef }: Input) => {
         .with(
           { kind: "action", action: { kind: "pass" } },
           async ({ action, updatedGameState }) => {
-            await floatingTextAnimation({
+            floatingTextAnimation({
               text: "PASS",
               ref: playerFloatingTextRefs[action.seatId],
               seatId: action.seatId,
@@ -213,8 +252,8 @@ export const useGame = ({ socketRef }: Input) => {
             } else {
               const cardRef = createRef<HTMLDivElement>();
               setOpponentDrawCards([cardRef]);
-              discardSE();
               await sleep(500);
+              discardSE();
               await drawOpponentCardAnimation({
                 opponentDrawCardRef: cardRef,
                 drawnPlayerAreaRef: playerCardRefs[action.seatId],
@@ -244,23 +283,30 @@ export const useGame = ({ socketRef }: Input) => {
                 }).then(() => {
                   const drawnCard = drawCards[index];
                   setDummyCard(drawnCard);
+                  discardSE();
                   drawMyCardAnimation({
                     dummyCardRef,
                   });
                   setDummyCard(undefined);
-                  setGameState((prev) => ({
-                    ...prev,
-                    myCards: prev.myCards?.concat(drawnCard) ?? [],
-                  } as GameState));
+                  setGameState(
+                    (prev) =>
+                      ({
+                        ...prev,
+                        myCards: prev.myCards?.concat(drawnCard) ?? [],
+                      }) as GameState,
+                  );
 
-                  setGameState((prev) => ({
-                    ...prev,
-                    players: prev?.players?.map((player) =>
-                      player.seatId === action.seatId
-                        ? { ...player, cardCount: player.cardCount + 1 }
-                        : player,
-                    ),
-                  } as GameState));
+                  setGameState(
+                    (prev) =>
+                      ({
+                        ...prev,
+                        players: prev?.players?.map((player) =>
+                          player.seatId === action.seatId
+                            ? { ...player, cardCount: player.cardCount + 1 }
+                            : player,
+                        ),
+                      }) as GameState,
+                  );
                 });
                 await sleep(1000);
                 index++;
@@ -305,9 +351,19 @@ export const useGame = ({ socketRef }: Input) => {
               myCards: [],
               deckSize: 112,
               mySeatId: updatedGameState.mySeatId,
-              canGameStart: !!gameState?.canGameStart,
+              canGameStart: false,
             } as GameState);
             await sleep(200);
+
+            gameSE();
+            await LettersPullUp.call({ text: "GAME" });
+
+            await sleep(500);
+
+            startSE();
+            await LettersPullUp.call({ text: "START" });
+
+            await sleep(500);
 
             type CardRef =
               | {
@@ -326,8 +382,9 @@ export const useGame = ({ socketRef }: Input) => {
               { length: updatedGameState.players.length * 7 },
               (_, index) => {
                 const seatId =
-                  updatedGameState.players[index % updatedGameState.players.length]
-                    .seatId;
+                  updatedGameState.players[
+                    index % updatedGameState.players.length
+                  ].seatId;
 
                 if (seatId === updatedGameState.mySeatId) {
                   return {
@@ -349,42 +406,62 @@ export const useGame = ({ socketRef }: Input) => {
 
             await sleep(200);
 
+            // Deckを表示するため
+            setGameState(
+              (prev) =>
+                ({
+                  ...prev,
+                  kind: updatedGameState.kind,
+                }) as GameState,
+            );
+
             for (const { kind, seatId, ref, index } of cardRefs) {
               discardSE();
 
               drawOpponentCardAnimation({
                 opponentDrawCardRef: ref,
                 drawnPlayerAreaRef: playerCardRefs[seatId],
-              }).then(() => {
-                if (kind === "hero" && typeof index === "number") {
+              }).then(async () => {
+                if (kind === "hero" && index !== undefined) {
                   const drawnCard = updatedGameState.myCards[index];
                   setDummyCard(drawnCard);
-                  drawMyCardAnimation({
+                  await drawMyCardAnimation({
                     dummyCardRef,
                   });
                   setDummyCard(undefined);
-                  setGameState((prev) => ({
-                    ...prev,
-                    myCards: prev.myCards?.concat(drawnCard) ?? [],
-                  } as GameState));
                 }
-                setGameState((prev) => ({
-                  ...prev,
-                  players: prev?.players?.map((player) =>
-                    player.seatId === seatId
-                      ? { ...player, cardCount: player.cardCount + 1 }
-                      : player,
-                  ),
-                } as GameState));
+                setGameState(
+                  (prev) =>
+                    ({
+                      ...prev,
+                      players: prev?.players?.map((player) =>
+                        player.seatId === seatId
+                          ? { ...player, cardCount: player.cardCount + 1 }
+                          : player,
+                      ),
+                      // heroの場合のみ、そのイテレーションのカードをmyCardsに追加
+                      ...(kind === "hero" && index !== undefined
+                        ? {
+                            myCards: [
+                              ...(prev.myCards ?? []),
+                              updatedGameState.myCards[index],
+                            ],
+                          }
+                        : {}),
+                    }) as GameState,
+                );
               });
 
               await sleep(100);
             }
 
-            setGameState((prev) => ({
-              ...prev,
-              deckSize: updatedGameState.deckSize + 1,
-            } as GameState));
+            setGameState(
+              (prev) =>
+                ({
+                  ...prev,
+                  deckSize: updatedGameState.deckSize + 1,
+                }) as GameState,
+            );
 
             await sleep(1500);
 
@@ -399,8 +476,8 @@ export const useGame = ({ socketRef }: Input) => {
     };
   }, [
     discardSE,
-    gameState?.canGameStart,
-    gameState?.myCards,
+    gameSE,
+    gameState,
     myCardRefs,
     opponentCard,
     opponentDrawCards,
@@ -408,6 +485,7 @@ export const useGame = ({ socketRef }: Input) => {
     playerCardRefs,
     playerFloatingTextRefs,
     socketRef,
+    startSE,
     unoSE,
   ]);
 

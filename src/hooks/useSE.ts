@@ -12,5 +12,11 @@ export const useSE = () => {
   const [unoSE] = useSound("/sound/uno.mp3", {
     volume: 0.5,
   });
-  return { passSE, drawSE, discardSE, unoSE };
+  const [gameSE] = useSound("/sound/game.mp3", {
+    volume: 0.5,
+  });
+  const [startSE] = useSound("/sound/start.mp3", {
+    volume: 0.5,
+  });
+  return { passSE, drawSE, discardSE, unoSE, gameSE, startSE };
 };

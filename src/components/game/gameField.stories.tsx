@@ -24,6 +24,14 @@ import { heroDrawStackState1, heroDrawStackState2 } from "./mock/heroDrawStack";
 import { heroPassState1, heroPassState2 } from "./mock/heroPass";
 import { heroUnoGameState1, heroUnoGameState2 } from "./mock/heroUno";
 import { startGameState1, startGameState2 } from "./mock/startGame";
+import {
+  flowState1,
+  flowState2,
+  flowState3,
+  flowState4,
+  flowState5,
+  flowState7,
+} from "./mock/flow";
 
 const receivedActionSchema = z.object({
   action: actionSchema,
@@ -38,6 +46,91 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
+
+export const Flow: Story = {
+  parameters: {
+    layout: "centered",
+    msw: {
+      handlers: [
+        server.addEventListener("connection", async (connection) => {
+          await wsSend(connection, {
+            kind: "init-game",
+            updatedGameState: flowState1,
+          });
+          connection.client.addEventListener("message", (event) => {
+            const parsedData = receivedActionSchema.safeParse(
+              JSON.parse(event.data.toString()),
+            );
+            if (!parsedData.success) {
+              console.error(parsedData.error);
+              return;
+            }
+            match(parsedData.data)
+              .with({ action: { kind: "start" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  updatedGameState: flowState2,
+                });
+              })
+              .with({ action: { kind: "discard" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  updatedGameState: flowState3,
+                });
+
+                await sleep(2000);
+
+                await wsSend(connection, {
+                  kind: "action",
+                  action: {
+                    kind: "discard",
+                    seatId: 2,
+                    card: {
+                      id: 5,
+                      kind: "ReverseCard",
+                      color: "red",
+                    },
+                    isUNO: false,
+                  },
+                  updatedGameState: flowState4,
+                });
+              })
+              .with({ action: { kind: "draw" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  updatedGameState: flowState5,
+                });
+              })
+              .with({ action: { kind: "pass" } }, async ({ action }) => {
+                await wsSend(connection, {
+                  kind: "action",
+                  action: action,
+                  updatedGameState: heroPassState2,
+                });
+
+                await sleep(2000);
+                await wsSend(connection, {
+                  kind: "action",
+                  action: {
+                    kind: "draw",
+                    seatId: 6,
+                  },
+                  updatedGameState: flowState7,
+                });
+              })
+              .otherwise(() => {
+                console.error("unexpected action");
+                return;
+              });
+          });
+        }),
+      ],
+    },
+  },
+};
 
 export const StartGame: Story = {
   parameters: {
